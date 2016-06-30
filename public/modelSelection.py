@@ -84,10 +84,11 @@ def BIC(X,Y,Z,p_lambda,mode=0,shrinkage=0):
         P = k_z*np.log(N_z)/2.0
     elif mode == 1:
         P = k_z*np.log(N_z)*(2.0/(N_z-2*k_z-1)-(1.0/(N_z-k_z-1)))/2.0
+        P *= 10000
     elif mode == 2:
         P = P_ABF2(mean_X,mean_Y,mean_Z,sigma_x,sigma_y,sigma_z,N_x,N_y,N_z)
 
-    print R, P, R-p_lambda*P, logdet_z, logdet_y, logdet_x, N_z, N_y, N_x
+    # print R, P, R-p_lambda*P, logdet_z, logdet_y, logdet_x, N_z, N_y, N_x
     # if det_z <0: print det_z
     # if det_y <0: print det_y
     # if det_x <0: print det_x

@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/speechSegmentation" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/public" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/eval" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/VUV" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

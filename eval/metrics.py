@@ -37,6 +37,41 @@ def boundaryDetection(groundtruthBoundaries, detectedBoundaries, tolerance):
 
     return numDetectedBoundaries, numGroundtruthBoundaries, numCorrect
 
+def offsetTh(groundtruth,tolerance):
+
+    thOffset = []
+
+    groundtruth = np.array(groundtruth)
+    if len(groundtruth):
+        for gt in groundtruth[:,1]-groundtruth[:,0]:
+            twentyP = gt*0.2
+            thOffset.append(max(twentyP,tolerance))
+
+    return thOffset
+
+def intervalDetection(groundtruth, detected, tolerance):
+        '''
+        :param groundtruth: a list [[start0,end0],[start1,end1],[start2,end2],...]
+        :param detected: a list [[start0,end0],[start1,end1],[start2,end2],...]
+        :return: COnOff, COn, OBOn, OBOff
+        '''
+
+        numGroundtruth    = len(groundtruth)
+        numDetected       = len(detected)
+        numCorrect        = 0
+
+        thOnset     = tolerance
+        thOffset    = offsetTh(groundtruth,tolerance)
+
+        if numGroundtruth:
+            for s in detected:
+                for gti in range(len(groundtruth)):
+                    if abs(groundtruth[gti][0]-s[0]) < thOnset and abs(groundtruth[gti][1]-s[1]) < thOffset[gti]:
+                        numCorrect += 1
+                        break       # break the first loop if s have been already mapped to
+
+        return numDetected, numGroundtruth, numCorrect
+
 def metrics(numDetectedBoundaries, numGroundtruthBoundaries, numCorrect):
 
     # hit rate or correct detection rate or recall rate

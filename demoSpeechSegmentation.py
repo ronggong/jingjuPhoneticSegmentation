@@ -4,6 +4,8 @@ import sys,os,time,csv
 import numpy as np
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "speechSegmentation"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "public"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "VUV"))
 sys.path.append(os.path.join(os.path.dirname(__file__), "eval"))
 
 
@@ -12,30 +14,13 @@ import Hoang    as Hoa
 import Estevan  as Est
 import Winebarger as Win
 
-import textgridParser
 import metrics
 import essentia.standard as ess
 import features
 
-def syllableTextgridExtraction(textgrid_path, recording):
-
-    '''
-    Extract syllable boundary and phoneme boundary from textgrid
-    :param textgrid_path:
-    :param recording:
-    :return:
-    nestedPhonemeList, element[0] - syllable, element[1] - a list containing the phoneme of the syllable
-    '''
-
-    textgrid_file   = os.path.join(textgrid_path,recording+'.TextGrid')
-
-    syllableList    = textgridParser.textGrid2WordList(textgrid_file, whichTier='pinyin')
-    phonemeList     = textgridParser.textGrid2WordList(textgrid_file, whichTier='xsampadetails')
-
-    # parse syllables of groundtruth
-    nestedPhonemeLists, numSyllables, numPhonemes   = textgridParser.wordListsParseByLines(syllableList, phonemeList)
-
-    return nestedPhonemeLists, numSyllables, numPhonemes
+from textgridParser import syllableTextgridExtraction
+from vuvAlgos import featureVUV,consonantInterval
+from sklearn.externals import joblib
 
 def featureSyllableSegmentation(feature_path, recording, nestedPhonemeLists,varin):
 
@@ -60,6 +45,8 @@ def featureSyllableSegmentation(feature_path, recording, nestedPhonemeLists,vari
 
     feature1                  = np.load(feature_filename)
     spec                      = np.load(spec_filename)
+    # vuv feature
+    feature_vuv               = featureVUV(feature_path,recording,varin)
 
     if varin['phonemeSegFunction'] == Win.mainFunction:
         mfcc_feature_filename     = os.path.join(feature_path,'mfcc'+'_'+recording+'_'
@@ -71,11 +58,14 @@ def featureSyllableSegmentation(feature_path, recording, nestedPhonemeLists,vari
     feature1_syllables      = []
     feature2_syllables      = []
     spec_syllables          = []
+    feature_vuv_syllables   = []
     for nestedPho in nestedPhonemeLists:
         syllable_start_frame    = int(round(nestedPho[0][0]*fs/hopsize))
         syllable_end_frame      = int(round(nestedPho[0][1]*fs/hopsize))
         feature_syllable        = feature1[syllable_start_frame:syllable_end_frame,:]
+        feature_vuv_syllable    = feature_vuv[syllable_start_frame:syllable_end_frame,:]
         feature1_syllables.append(feature_syllable)
+        feature_vuv_syllables.append(feature_vuv_syllable)
 
         if varin['phonemeSegFunction'] == Win.mainFunction:
             # mfcc
@@ -89,11 +79,13 @@ def featureSyllableSegmentation(feature_path, recording, nestedPhonemeLists,vari
         spec_syllable           = spec[syllable_start_frame:syllable_end_frame,:]
         spec_syllables.append(spec_syllable)
 
+    return feature1_syllables, feature2_syllables, spec_syllables, feature_vuv_syllables
 
-    return feature1_syllables, feature2_syllables, spec_syllables
-
-def eval4oneSong(feature1_syllables, feature2_syllables, spec_syllables, nestedPhonemeLists,
-                 tolerance, phonemeSegfunction, varin):
+def eval4oneSong(feature1_syllables, feature2_syllables, spec_syllables, feature_vuv_syllables, nestedPhonemeLists,
+                phonemeSegfunction, varin):
+    '''
+    feature1_syllables: an array containing the feature vectors for each syllable
+    '''
 
     sumNumGroundtruthBoundaries,sumNumDetectedBoundaries,sumNumCorrect = 0,0,0
 
@@ -119,10 +111,31 @@ def eval4oneSong(feature1_syllables, feature2_syllables, spec_syllables, nestedP
 
         detectedBoundaries   = phonemeSegfunction(feature,spec_syllables[ii],varin)
 
+        # detect consonant, erase boundaries from this region, then add consonant boundaries
+        if varin['vuvCorrection']:
+            models_path         = '/Users/gong/Documents/MTG document/Jingju arias/phonemeSeg/models'
+            scaler_filename     = os.path.join(models_path,'VUV_classification','standardization','scaler.pkl')
+            svm_model_filename  = os.path.join(models_path,'VUV_classification','svm','svm_model.pkl')
+            scaler              = joblib.load(scaler_filename)
+            svm_model_object    = joblib.load(svm_model_filename)
+
+            detectedinterval_vuv = consonantInterval(feature_vuv_syllables[ii],scaler,svm_model_object,varin)
+            if len(detectedinterval_vuv):
+                detectedBoundaries_vuv = np.hstack(detectedinterval_vuv)
+                for ii_db in np.arange(len(detectedBoundaries))[::-1]:
+                    for di_vuv in detectedinterval_vuv:
+                        if di_vuv[0]-varin['tolerance'] < detectedBoundaries[ii_db] < di_vuv[1]+varin['tolerance']:
+                            detectedBoundaries = np.delete(detectedBoundaries,ii_db)
+                            break
+            else:
+                detectedBoundaries_vuv = np.array([])
+            detectedBoundaries = np.hstack((detectedBoundaries,detectedBoundaries_vuv))
+
+        # evaluation
         numDetectedBoundaries, numGroundtruthBoundaries, numCorrect = \
             metrics.boundaryDetection(groundtruthBoundaries=groundtruthBoundaries,
                                   detectedBoundaries=detectedBoundaries,
-                                  tolerance=tolerance)
+                                  tolerance=varin['tolerance'])
 
         sumNumGroundtruthBoundaries += numGroundtruthBoundaries
         sumNumDetectedBoundaries    += numDetectedBoundaries
@@ -146,9 +159,10 @@ varin['fs']          = 44100
 varin['framesize']   = int(round(framesize_t*fs))
 varin['hopsize']     = int(round(hopsize_t*fs))
 
-feature_set          = ['mfcc', 'mfccBands','gfcc','plpcc','plp','rasta-plpcc', 'rasta-plp', 'bark','mrcg']
+feature_set          = ['zcr','autoCorrelation','mfcc', 'dmfcc', 'mfccBands','gfcc','plpcc','plp','rasta-plpcc', 'rasta-plp', 'bark','mrcg']
 varin['feature_select'] = 'mfccBands'
 varin['rasta']       = False
+varin['vuvCorrection'] = True
 
 varin['a']           = 20
 varin['b']           = 0.1
@@ -175,7 +189,7 @@ varin['gamma']  = 10**(-1)          # RBF width
 # Est.mainFunction(filename=filename,varin=varin)
 
 varin['p_lambda']    = 0.35
-varin['mode_bic']    = 0
+varin['mode_bic']    = 1
 varin['h2']          = 0.0
 varin['alpha']       = 0.5
 varin['winmax']      = 0.35              # max dynamic window size
@@ -186,20 +200,21 @@ wav_path        = '/Users/gong/Documents/MTG document/Jingju arias/phonemeSeg/wa
 textgrid_path   = '/Users/gong/Documents/MTG document/Jingju arias/phonemeSeg/textgrid'
 feature_path    = '/Users/gong/Documents/MTG document/Jingju arias/phonemeSeg/feature'
 
-tolerance       = 0.02
+varin['tolerance']   = 0.02
 
 recordings      = []
 for root, subFolders, files in os.walk(wav_path):
         for f in files:
             file_prefix, file_extension = os.path.splitext(f)
-            recordings.append(file_prefix)
+            if file_prefix != '.DS_Store':
+                recordings.append(file_prefix)
 
 # for feature in feature_set:
 #     varin['feature_select']     = feature
 #     if feature == 'mrcg':
 #         varin['hopsize']        = 0.01
 
-'''
+
 ####---- feature extraction
 for recording in recordings:
     wav_file   = os.path.join(wav_path,recording+'.wav')
@@ -207,7 +222,7 @@ for recording in recordings:
                                                +str(varin['framesize'])+'_'+str(varin['hopsize'])+'.npy')
     spec_filename           = os.path.join(feature_path,'spec'+'_'+recording+'_'
                                                +str(varin['framesize'])+'_'+str(varin['hopsize'])+'.npy')
-    for featurename in feature_set:
+    for featurename in feature_set[3:4]:
         print 'saving feature for ', recording, ', feature ', featurename
         feature_filename        = os.path.join(feature_path,featurename+'_'+recording+'_'
                                                +str(varin['framesize'])+'_'+str(varin['hopsize'])+'.npy')
@@ -220,9 +235,8 @@ for recording in recordings:
             np.save(energy_filename,energy)
             np.save(spec_filename,spec)
 
+
 '''
-
-
 ####---- Hoang's method
 
 start = time.time()
@@ -246,12 +260,12 @@ with open(eval_result_file_name, 'w') as testfile:
                 numGroundtruthBoundaries, numDetectedBoundaries, numCorrect = 0,0,0
                 for recording in recordings:
                     print 'evaluate ', recording, ' l,h1,h2', l, h1, h2
-                    nestedPhonemeLists, numSyllables, numPhonemes = syllableTextgridExtraction(textgrid_path,recording)
-                    feature_Syllables, spec_syllables, energy_syllables = featureSyllableSegmentation(feature_path, recording,
+                    nestedPhonemeLists, numSyllables, numPhonemes = syllableTextgridExtraction(textgrid_path,recording,'pinyin','details')
+                    feature_Syllables, spec_syllables, energy_syllables, feature_vuv_syllables = featureSyllableSegmentation(feature_path, recording,
                                                                                                 nestedPhonemeLists, varin)
                     sumNumGroundtruthBoundaries, sumNumDetectedBoundaries, sumNumCorrect = \
-                        eval4oneSong(feature_Syllables, spec_syllables, energy_syllables, nestedPhonemeLists,
-                                     tolerance, varin['phonemeSegFunction'], varin)
+                        eval4oneSong(feature_Syllables, spec_syllables, energy_syllables, feature_vuv_syllables, nestedPhonemeLists,
+                                    varin['phonemeSegFunction'], varin)
 
                     numGroundtruthBoundaries    += sumNumGroundtruthBoundaries
                     numDetectedBoundaries       += sumNumDetectedBoundaries
@@ -265,51 +279,60 @@ with open(eval_result_file_name, 'w') as testfile:
 end = time.time()
 print 'elapse time: ', end-start
 
-
+'''
 
 '''
-####---- Winebarger's method
+####---- Winebarger's method, BICc
+
+varin['phonemeSegFunction'] = Win.mainFunction
+
+def win_eval(feature_string):
+
+    varin['feature_select'] = feature_string
+
+    eval_result_file_name = '/Users/gong/Documents/MTG document/Jingju arias/phonemeSeg/eval/win/bicc' \
+                            + '/win_bicc_vuv_'+feature_string+'.csv'
+
+    with open(eval_result_file_name, 'w') as testfile:
+        csv_writer = csv.writer(testfile)
+
+        h2          = 0.02
+        alpha       = 0.2
+        for p_lambda in np.arange(5.0,8.1,0.1):
+
+            varin['h2']             = h2
+            varin['alpha']          = alpha
+            varin['p_lambda']       = p_lambda
+
+            numGroundtruthBoundaries, numDetectedBoundaries, numCorrect = 0,0,0
+            for recording in recordings:
+                print 'evaluate ', recording, ' l,h1,h2', h2, alpha, p_lambda
+                nestedPhonemeLists, numSyllables, numPhonemes = syllableTextgridExtraction(textgrid_path,recording,'pinyin','details')
+                feature_Syllables, spec_syllables, energy_syllables, feature_vuv_syllables = featureSyllableSegmentation(feature_path, recording,
+                                                                                            nestedPhonemeLists, varin)
+                sumNumGroundtruthBoundaries, sumNumDetectedBoundaries, sumNumCorrect = \
+                    eval4oneSong(feature_Syllables, spec_syllables, energy_syllables, feature_vuv_syllables, nestedPhonemeLists,
+                                 varin['phonemeSegFunction'], varin)
+
+                numGroundtruthBoundaries    += sumNumGroundtruthBoundaries
+                numDetectedBoundaries       += sumNumDetectedBoundaries
+                numCorrect                  += sumNumCorrect
+
+            HR, OS, FAR, F, R, deletion, insertion = \
+                metrics.metrics(numDetectedBoundaries, numGroundtruthBoundaries, numCorrect)
+
+            csv_writer.writerow([h2, alpha, p_lambda, HR, OS, FAR, F, R, deletion, insertion,numGroundtruthBoundaries])
+
 
 start = time.time()
 
-varin['phonemeSegFunction'] = Hoa.mainFunction
-varin['feature_select'] = 'mfcc'
-
-eval_result_file_name = '/Users/gong/Documents/MTG document/Jingju arias/phonemeSeg' + '/win_mfcc.csv'
-
-with open(eval_result_file_name, 'w') as testfile:
-    csv_writer = csv.writer(testfile)
-
-    for h2 in [0.0,0.02,0.04,0.06,0.08,0.1]:
-        for alpha in [0.2,0.4,0.6,0.8,1.0]:
-            for p_lambda in [0.2,0.4,0.6,0.8,1.0]:
-
-                varin['h2']             = h2
-                varin['alpha']          = alpha
-                varin['p_lambda']       = p_lambda
-
-                numGroundtruthBoundaries, numDetectedBoundaries, numCorrect = 0,0,0
-                for recording in recordings:
-                    print 'evaluate ', recording, ' l,h1,h2', h2, alpha, p_lambda
-                    nestedPhonemeLists, numSyllables, numPhonemes = syllableTextgridExtraction(textgrid_path,recording)
-                    feature_Syllables, spec_syllables, energy_syllables = featureSyllableSegmentation(feature_path, recording,
-                                                                                                nestedPhonemeLists, varin)
-                    sumNumGroundtruthBoundaries, sumNumDetectedBoundaries, sumNumCorrect = \
-                        eval4oneSong(feature_Syllables, spec_syllables, energy_syllables, nestedPhonemeLists,
-                                     tolerance, varin['phonemeSegFunction'], varin)
-
-                    numGroundtruthBoundaries    += sumNumGroundtruthBoundaries
-                    numDetectedBoundaries       += sumNumDetectedBoundaries
-                    numCorrect                  += sumNumCorrect
-
-                HR, OS, FAR, F, R, deletion, insertion = \
-                    metrics.metrics(numDetectedBoundaries, numGroundtruthBoundaries, numCorrect)
-
-                csv_writer.writerow([h2, alpha, p_lambda, HR, OS, FAR, F, R, deletion, insertion])
+# for feature_string in feature_set[0:-1]:
+win_eval('mfccBands')
 
 end = time.time()
 print 'elapse time: ', end-start
 '''
+
 
 
 

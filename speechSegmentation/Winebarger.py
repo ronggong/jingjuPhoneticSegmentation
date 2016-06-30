@@ -143,6 +143,7 @@ def mainFunction(feature,spec,varin):
 
     # plot
     if plot:
+        N               = 2 * framesize
         mX              = spec
         mX              = np.transpose(mX)
         maxplotfreq     = 6001.0
@@ -151,27 +152,25 @@ def mainFunction(feature,spec,varin):
         binFreqs        = np.arange(mXPlot.shape[0])*fs/float(N)
         timestamps_spec = np.arange(mXPlot.shape[1]) * (hopsize/float(fs))
 
-        timestamps_audio= np.arange(len(audio))/float(fs)
         timestamps      = np.arange(T) * (hopsize/float(fs))
         timestamps_p_SVF= p_SVF * (hopsize/float(fs))
         timestamps_p_BIC= p_BIC * (hopsize/float(fs))
 
         f, axarr = plt.subplots(3, sharex=True)
-        axarr[0].plot(timestamps_audio,audio)
+
+        axarr[0].plot(timestamps, SVF)
+        axarr[0].stem(timestamps_p_SVF, a_SVF)
+        axarr[0].set_ylabel('SVF')
+        axarr[0].set_title('boundary heuristics')
 
         axarr[1].plot(timestamps, SVF)
-        axarr[1].stem(timestamps_p_SVF, a_SVF)
-        axarr[1].set_ylabel('SVF')
-        axarr[1].set_title('boundary heuristics')
+        axarr[1].stem(timestamps_p_BIC, a_BIC)
+        axarr[1].set_title('boundary DISTBIC')
 
-        axarr[2].plot(timestamps, SVF)
-        axarr[2].stem(timestamps_p_BIC, a_BIC)
-        axarr[2].set_title('boundary DISTBIC')
-
-        axarr[3].pcolormesh(timestamps_spec, binFreqs, 20*np.log10(mXPlot+eps))
-        axarr[3].set_title('spectrogram')
+        axarr[2].pcolormesh(timestamps_spec, binFreqs, 20*np.log10(mXPlot+eps))
+        axarr[2].set_title('spectrogram')
         for ii in range(0,len(timestamps_p_BIC)):
-            axarr[3].axvline(timestamps_p_BIC[ii])
+            axarr[2].axvline(timestamps_p_BIC[ii])
 
         # plpcc           = np.transpose(plp[:,1:])
         # binFreqs        = np.arange(plpcc.shape[0])
@@ -184,6 +183,6 @@ def mainFunction(feature,spec,varin):
         # timestamps_spec = np.arange(all_MRCG.shape[1]) * (hopsize/float(fs))
         # plt.figure()
         # plt.pcolormesh(timestamps_spec, binFreqs, all_MRCG)
-        # plt.show()
+        plt.show()
 
     return timestamps_p_BIC
