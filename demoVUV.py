@@ -15,9 +15,12 @@ from sklearn.cross_validation import train_test_split
 from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import classification_report
 from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 from sklearn import preprocessing
 from sklearn.externals import joblib
 from sklearn import mixture
+
+from sklearn.ensemble import RandomForestClassifier
 
 def featureClassCollection(feature, nestedPhonemeLists,varin):
 
@@ -56,57 +59,61 @@ def featureClassCollection(feature, nestedPhonemeLists,varin):
 
     return np.vstack(fv_voiced), np.vstack(fv_unvoiced), np.vstack(fv_silence)
 
+def report_cv(clf,fv_test,target_test):
+
+    print("Best parameters set found on development set:")
+    print()
+    print(clf.best_params_)
+    print()
+    print("Grid scores on development set:")
+    print()
+    for params, mean_score, scores in clf.grid_scores_:
+        print("%0.3f (+/-%0.03f) for %r"
+              % (mean_score, scores.std() * 2, params))
+    print()
+
+    print("Detailed classification report:")
+    print()
+    print("The model is trained on the full development set.")
+    print("The scores are computed on the full evaluation set.")
+    print()
+    target_true, target_pred = target_test, clf.predict(fv_test)
+    print(classification_report(target_true, target_pred))
+    print()
+
 def svm_cv(fv_train,target_train,fv_test,target_test):
 
     ####---- cross validation of train dataset, gridsearch the best parameters for svm
 
     # Set the parameters by cross-validation
-    tuned_parameters = [{'kernel': ['rbf'], 'gamma': [0.001, 0.01, 0.1, 1, 10, 100, 1000],
-                         'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000]}]
-    # tuned_parameters = [{'kernel': ['rbf'], 'gamma': [10],
-    #                      'C': [0.001]}]
+    # tuned_parameters = [{'kernel': ['rbf'], 'gamma': [0.001, 0.01, 0.1, 1, 10, 100, 1000],
+    #                      'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000]}]
+    tuned_parameters = [{'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000],
+                         'class_weight': [None, 'balanced']}]
 
-    scores = ['precision', 'recall']
+    scores = ['f1']
 
     for score in scores:
         print("# Tuning hyper-parameters for %s" % score)
         print()
 
-        clf = GridSearchCV(SVC(C=1), tuned_parameters, cv=5,
+        clf = GridSearchCV(LinearSVC(C=1), tuned_parameters, cv=5, n_jobs=-1,
                            scoring='%s_weighted' % score)
         clf.fit(fv_train, target_train)
 
-        print("Best parameters set found on development set:")
-        print()
-        print(clf.best_params_)
-        print()
-        print("Grid scores on development set:")
-        print()
-        for params, mean_score, scores in clf.grid_scores_:
-            print("%0.3f (+/-%0.03f) for %r"
-                  % (mean_score, scores.std() * 2, params))
-        print()
-
-        print("Detailed classification report:")
-        print()
-        print("The model is trained on the full development set.")
-        print("The scores are computed on the full evaluation set.")
-        print()
-        target_true, target_pred = target_test, clf.predict(fv_test)
-        print(classification_report(target_true, target_pred))
-        print()
+        report_cv(clf,fv_test,target_test)
 
         # # dump the model into pkl
         # svm_model_filename = os.path.join(models_path,'VUV_classification','svm','best_%s.pkl' % score)
         # joblib.dump(clf,svm_model_filename)
 
-def svm_model(fv_train,target_train,C,gamma,svm_model_filename):
+def svm_model(fv_train,target_train,C,class_weight,svm_model_filename):
     # generate the model
-    clf = SVC(C=C,gamma=gamma,kernel='rbf')
+    clf = LinearSVC(C=C,class_weight=class_weight)
     clf.fit(fv_train,target_train)
     joblib.dump(clf,svm_model_filename)
 
-def svm_predict(textgrid_path,feature_path,scaler_filename,svm_model_filename,recording,varin):
+def predict(textgrid_path,feature_path,scaler_filename,svm_model_filename,recording,varin):
 
     hopsize         = varin['hopsize']
     fs              = varin['fs']
@@ -207,6 +214,36 @@ def gmm_cv(fv_train,target_train,fv_test,target_test):
 
             print cv_type, n_components, ' Train accuracy: %.1f' % train_accuracy
 
+def rf_cv(fv_train,target_train,fv_test,target_test):
+
+    ####---- cross validation of train dataset, gridsearch the best parameters for random forest
+
+    # Set the parameters by cross-validation
+    tuned_parameters = {'n_estimators': [1000, 2000],
+                        "max_depth": [3, 6, 9, None],
+                        "max_features": ["auto","log2",None],
+                        "class_weight": [None, 'balanced']}
+
+    scores = ['precision', 'recall']
+
+    for score in scores:
+        print("# Tuning hyper-parameters for %s" % score)
+        print()
+
+        clf = GridSearchCV(RandomForestClassifier(n_jobs=-1), tuned_parameters, cv=5,
+                           scoring='%s_weighted' % score)
+        clf.fit(fv_train, target_train)
+
+        report_cv(clf,fv_test,target_test)
+
+def rf_model(fv_train,target_train,n_estimators,max_depth,max_features,class_weight,rf_model_filename):
+    # generate the model
+    clf = RandomForestClassifier(n_estimators=n_estimators,
+                                 max_depth=max_depth,
+                                 max_features=max_features,
+                                 class_weight=class_weight)
+    clf.fit(fv_train,target_train)
+    joblib.dump(clf,rf_model_filename)
 
 if __name__ == '__main__':
 
@@ -217,6 +254,7 @@ if __name__ == '__main__':
     models_path     = '/Users/gong/Documents/MTG document/Jingju arias/phonemeSeg/models'
     scaler_filename = os.path.join(models_path,'VUV_classification','standardization','scaler.pkl')
     svm_model_filename = os.path.join(models_path,'VUV_classification','svm','svm_model.pkl')
+    rf_model_filename = os.path.join(models_path,'VUV_classification','rf','rf_model.pkl')
 
     framesize_t = 0.020
     hopsize_t   = 0.010
@@ -244,7 +282,7 @@ if __name__ == '__main__':
     fv_voiced_all       = []
     fv_unvoiced_all     = []
     fv_silence_all      = []
-    for recording in recordings[:1]:
+    for recording in recordings:
 
         nestedPhonemeLists, numSyllables, numPhonemes \
             = syllableTextgridExtraction(textgrid_path, recording, 'pinyin', 'details')
@@ -265,6 +303,8 @@ if __name__ == '__main__':
     fv_uv_copy      = np.copy(fv_unvoiced_all)
     fv_s_copy       = np.copy(fv_silence_all)
 
+    print fv_voiced_all.shape, fv_unvoiced_all.shape
+
     ####----balance class
     try:
         if sys.argv[2] == 'balance':
@@ -282,15 +322,16 @@ if __name__ == '__main__':
 
     ####---- split the dataset into train and test
     # class target number, 0 voiced, 1 unvoiced, 2 silence
-    target_all      = np.array([0]*fv_voiced_all.shape[0]+[1]*fv_unvoiced_all.shape[0]+[0]*fv_silence_all.shape[0])
+    target_all      = np.array([0]*fv_voiced_all.shape[0]+[1]*fv_unvoiced_all.shape[0]+[2]*fv_silence_all.shape[0])
     fv_all          = np.vstack((fv_voiced_all,fv_unvoiced_all,fv_silence_all))
     fv_train,fv_test,target_train,target_test = train_test_split(fv_all,target_all,test_size=0.25,stratify=target_all)
 
+    print 'feature shape', fv_all.shape
     ####---- standardization
     scaler          = preprocessing.StandardScaler().fit(fv_train)
 
     # dump scaler into pkl
-    # joblib.dump(scaler,scaler_filename)
+    joblib.dump(scaler,scaler_filename)
 
     fv_train_transformed    = scaler.transform(fv_train)
     fv_test_transformed     = scaler.transform(fv_test)
@@ -300,14 +341,25 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'gmm_cv':
         gmm_cv(fv_train,target_train,fv_test,target_test)
     elif sys.argv[1] == 'svm_model':
-        svm_model(fv_train_transformed,target_train,10,0.001,svm_model_filename)
+        svm_model(fv_train_transformed,target_train,C=1,class_weight=None,svm_model_filename=svm_model_filename)
+    elif sys.argv[1] == 'rf_cv':
+        rf_cv(fv_train_transformed,target_train,fv_test_transformed,target_test)
+    elif sys.argv[1] == 'rf_model':
+        rf_model(fv_train,
+                 target_train,
+                 n_estimators=1000,
+                 max_depth=6,
+                 max_features='auto',
+                 class_weight=None,
+                 rf_model_filename=rf_model_filename)
     elif sys.argv[1] == 'svm_predict':
+        model_filename = svm_model_filename
         # recording = recordings[randint(0,len(recordings)-1)]
         numGroundtruthIntervals, numDetectedIntervals, numCorrect = 0,0,0
         for recording in recordings:
             print 'evaluate %s' % recording
             sumNumGroundtruthIntervals, sumNumDetectedIntervals, sumNumCorrect = \
-                svm_predict(textgrid_path,feature_path,scaler_filename,svm_model_filename,recording,varin)
+                predict(textgrid_path,feature_path,scaler_filename,model_filename,recording,varin)
             numGroundtruthIntervals    += sumNumGroundtruthIntervals
             numDetectedIntervals       += sumNumDetectedIntervals
             numCorrect                    += sumNumCorrect

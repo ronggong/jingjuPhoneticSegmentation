@@ -22,8 +22,12 @@ def featureVUV(feature_path, recording,varin):
                                                +str(varin['framesize'])+'_'+str(varin['hopsize'])+'.npy')
     mfcc_filename           = os.path.join(feature_path,'mfcc'+'_'+recording+'_'
                                                +str(varin['framesize'])+'_'+str(varin['hopsize'])+'.npy')
+    dmfcc_filename          = os.path.join(feature_path,'dmfcc'+'_'+recording+'_'
+                                               +str(varin['framesize'])+'_'+str(varin['hopsize'])+'.npy')
+
     #
     mfcc                    = np.load(mfcc_filename)
+    dmfcc                   = np.load(dmfcc_filename)
     zcr                     = np.zeros(shape=(mfcc.shape[0],1))
     autoCorrelation         = np.zeros(shape=(mfcc.shape[0],1))
     energy                  = np.zeros(shape=(mfcc.shape[0],1))
@@ -33,7 +37,7 @@ def featureVUV(feature_path, recording,varin):
     energy[:,0]             = np.load(energy_filename)
     energy                  = np.log(np.finfo(np.float).eps+energy)
 
-    feature                 = np.hstack((zcr,autoCorrelation,energy,mfcc))
+    feature                 = np.hstack((zcr,autoCorrelation,energy,mfcc,dmfcc))
 
     return feature
 
