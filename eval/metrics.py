@@ -1,3 +1,29 @@
+'''
+ * Copyright (C) 2016  Music Technology Group - Universitat Pompeu Fabra
+ *
+ * This file is part of jingjuPhoneticSegmentation
+ *
+ * pypYIN is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License as published by the Free
+ * Software Foundation (FSF), either version 3 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the Affero GNU General Public License
+ * version 3 along with this program.  If not, see http://www.gnu.org/licenses/
+ *
+ * If you have any problem about this python version code, please contact: Rong Gong
+ * rong.gong@upf.edu
+ *
+ *
+ * If you want to refer this code, please use this article:
+ *
+'''
+
 import numpy as np
 
 
@@ -15,25 +41,33 @@ def boundaryDetection(groundtruthBoundaries, detectedBoundaries, tolerance):
     numDetectedBoundaries       = len(detectedBoundaries)
     numGroundtruthBoundaries    = len(groundtruthBoundaries)
 
-    groundtruthTag              = [0]*numGroundtruthBoundaries
+    correctTag                  = [0]*numGroundtruthBoundaries
+    detectedBoundariesTag       = [0]*numDetectedBoundaries
+    startBoundDetected          = 0
+    endBoundDetected            = 0
+    detectedBoundariesToDelete  = 0
 
     for idx_gtb,gtb in enumerate(groundtruthBoundaries):
-        for idx_db, db in enumerate(detectedBoundaries):
+        for idx_db,db in enumerate(detectedBoundaries):
 
-            if abs(db-gtb) < tolerance:
-                # if idx_gtb has not been detected and is either syllable start or end
-                # we detected a phone boundary as the syllable boundary
+            if not correctTag[idx_gtb] and not detectedBoundariesTag[idx_db] and abs(db-gtb) < tolerance:
+                # we detected a phone boundary at the same time the syllable boundary
                 # but we don't count this kind of boundary
-                if not groundtruthTag[idx_gtb] and (idx_gtb == 0 or idx_gtb == numGroundtruthBoundaries-1):
-                    numDetectedBoundaries   -= 1
-                groundtruthTag[idx_gtb] = 1                                    # found boundary for boundary idx
+                correctTag[idx_gtb]                  = 1         # found boundary for boundary idx
+                detectedBoundariesTag[idx_db]        = 1
+                if not startBoundDetected and idx_gtb == 0:
+                    detectedBoundariesToDelete      += 1
+                    startBoundDetected              = 1
+                if not endBoundDetected and idx_gtb == numGroundtruthBoundaries-1:
+                    detectedBoundariesToDelete      += 1
+                    endBoundDetected                 = 1
+                break
 
     # don't count the syllable start and end
     numGroundtruthBoundaries    -= 2
-    groundtruthTag.pop(-1)
-    groundtruthTag.pop(0)
+    numDetectedBoundaries       -= detectedBoundariesToDelete
 
-    numCorrect          = sum(groundtruthTag)
+    numCorrect          = sum(correctTag) - startBoundDetected - endBoundDetected
 
     return numDetectedBoundaries, numGroundtruthBoundaries, numCorrect
 
@@ -96,3 +130,12 @@ def metrics(numDetectedBoundaries, numGroundtruthBoundaries, numCorrect):
     insertion   = numDetectedBoundaries     - numCorrect
 
     return HR, OS, FAR, F, R, deletion, insertion
+
+def sortResultByCol(result_filename, result_sorted_filename,col):
+
+    result  = np.loadtxt(result_filename,delimiter=',')
+    index_sorted = np.argsort(result[:,col])
+    result_sorted = result[index_sorted,:]
+    np.savetxt(result_sorted_filename,result_sorted,fmt='%.3f',delimiter=',')
+
+    return None

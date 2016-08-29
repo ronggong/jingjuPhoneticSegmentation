@@ -1,6 +1,8 @@
 import operator, os
 import numpy as np
 
+####--- sort table according to the column
+
 def sort_table(table, col=0):
     return sorted(table, key=operator.itemgetter(col))
 

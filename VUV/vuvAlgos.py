@@ -1,3 +1,29 @@
+'''
+ * Copyright (C) 2016  Music Technology Group - Universitat Pompeu Fabra
+ *
+ * This file is part of jingjuPhoneticSegmentation
+ *
+ * pypYIN is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License as published by the Free
+ * Software Foundation (FSF), either version 3 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the Affero GNU General Public License
+ * version 3 along with this program.  If not, see http://www.gnu.org/licenses/
+ *
+ * If you have any problem about this python version code, please contact: Rong Gong
+ * rong.gong@upf.edu
+ *
+ *
+ * If you want to refer this code, please use this article:
+ *
+'''
+
 import os
 import numpy as np
 
@@ -24,10 +50,13 @@ def featureVUV(feature_path, recording,varin):
                                                +str(varin['framesize'])+'_'+str(varin['hopsize'])+'.npy')
     dmfcc_filename          = os.path.join(feature_path,'dmfcc'+'_'+recording+'_'
                                                +str(varin['framesize'])+'_'+str(varin['hopsize'])+'.npy')
+    # mfccBands_filename      = os.path.join(feature_path,'mfccBands'+'_'+recording+'_'
+    #                                            +str(varin['framesize'])+'_'+str(varin['hopsize'])+'.npy')
 
     #
     mfcc                    = np.load(mfcc_filename)
     dmfcc                   = np.load(dmfcc_filename)
+    # mfccBands               = np.load(mfccBands_filename)
     zcr                     = np.zeros(shape=(mfcc.shape[0],1))
     autoCorrelation         = np.zeros(shape=(mfcc.shape[0],1))
     energy                  = np.zeros(shape=(mfcc.shape[0],1))
@@ -52,8 +81,9 @@ def consonantInterval(syllable_feature,scaler,svm_model_object,varin):
     :param fs:
     :return: [[consonant begin time0, consonant end time0],[begin time1, end time1], ...]
     '''
-    hopsize = varin['hopsize']
-    fs      = varin['fs']
+    hopsize         = varin['hopsize']
+    fs              = varin['fs']
+    syllableLen     = syllable_feature.shape[0] * (hopsize/float(fs))
 
     # standardization
     pho_feature_transformed = scaler.transform(syllable_feature)
@@ -86,5 +116,11 @@ def consonantInterval(syllable_feature,scaler,svm_model_object,varin):
         detectedBoundaries_interval.append(consonantInterval)
 
     detectedBoundaries_interval = np.array(detectedBoundaries_interval)*hopsize/float(fs)
+
+    # post processing of the interval
+    for jj in range(len(detectedBoundaries_interval))[::-1]:
+        if detectedBoundaries_interval[jj][0] > syllableLen/8.0 or \
+                detectedBoundaries_interval[jj][1]-detectedBoundaries_interval[jj][0] < 0.02:
+            detectedBoundaries_interval     = np.delete(detectedBoundaries_interval,jj,axis=0)
 
     return detectedBoundaries_interval
