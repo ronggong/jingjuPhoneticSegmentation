@@ -7,7 +7,7 @@ This repo is for the review of "A CLASSIFICATION METHOD FOR PHONETIC SEGMENTATIO
 
 1.This table shows the annotation units used in 'pinyin' and 'details' tiers of each .\dataset\textgrid\\*.TextGrid  
 
-2.Chinese pyin and X-SAMPA format are given. 
+2.Chinese pinyin and X-SAMPA format are given. 
 
 3.b,p,d,t,k,j,q,x,zh,ch,sh,z,c,s initials are grouped into one representation (not X-SAMPA): c  
 
