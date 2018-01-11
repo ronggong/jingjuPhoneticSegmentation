@@ -6,8 +6,10 @@
       <sourceFolder url="file://$MODULE_DIR$/public" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/eval" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/VUV" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/general" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/lyricsRecognizer" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 2.7.13 virtualenv at ~/keras122-py213" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

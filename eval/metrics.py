@@ -30,7 +30,7 @@ import numpy as np
 def boundaryDetection(groundtruthBoundaries, detectedBoundaries, tolerance):
     '''
     :param groundtruthBoundaries:   phone boundary time in second, include the syllable start and end
-    :param detectedBoundaries:      same structure as groundtruthBoundaries
+    :param detectedBoundaries:      same structure as groundtruthBoundaries, include the syllable start and end
     :param tolerance:               tolerance in second
     :return:                        number of detected phone boundaries,
                                     number of ground truth phone boundaries,
@@ -118,7 +118,7 @@ def metrics(numDetectedBoundaries, numGroundtruthBoundaries, numCorrect):
     FAR = (numDetectedBoundaries-numCorrect)/float(numGroundtruthBoundaries)
 
     # F-measure
-    PCR = 1.0 - FAR     # precision rate
+    PCR = numCorrect/float(numDetectedBoundaries)     # precision rate
     F   = 2.0*PCR*HR/(PCR+HR)
 
     # R-value
