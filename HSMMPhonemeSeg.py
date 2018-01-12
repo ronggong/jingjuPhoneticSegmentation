@@ -16,12 +16,17 @@ from lyricsRecognizer.audioPreprocessing import getMFCCBands2DMadmom, featureRes
 
 from onsetSegmentEval.utilFunctions import removeSilence
 
-from general.filePath import *
+from general.filePathHsmm import *
 from general.parameters import *
 from general.textgridParser import textGrid2WordList
 from general.textgridParser import wordListsParseByLines
 from general.trainTestSeparation import getTestTrainRecordingsJoint
 from general.phonemeMap import dic_pho_map
+from helperCode import results_aggregation_save_helper
+from helperCode import gt_score_preparation_helper
+import os
+from onsetSegmentEval.runEval import run_eval_onset
+from onsetSegmentEval.runEval import run_eval_segment
 
 
 def textgridSyllablePhonemeParser(textgrid_file, tier1, tier2):
@@ -181,48 +186,25 @@ def phonemeSegAllRecordings(wav_path,
         # mfcc_reshaped, mfcc = mfccFeature_pipeline(wav_file)
 
         for ii_line in range(len(gtSyllableLists)):
-
-            ###--- groundtruth, score preparation
-            lineList_gt_syllable = gtSyllableLists[ii_line]
-            lineList_score_syllable = scoreSyllableLists[ii_line]
-            lineList_gt_phoneme = gtPhonemeLists[ii_line]
-            lineList_score_phoneme = scorePhonemeLists[ii_line]
-
-            time_start = lineList_gt_syllable[0][0]
-            time_end = lineList_gt_syllable[0][1]
-
-            frame_start = int(round(time_start / hopsize_t))
-            frame_end = int(round(time_end / hopsize_t))
-
-            # list has syllable and phoneme information
-            syllable_list_gt = lineList_gt_syllable[1]
-            phoneme_list_gt = lineList_gt_phoneme[1]
-
-            syllable_list_score = lineList_score_syllable[1]
-            phoneme_list_score = lineList_score_phoneme[1]
-
-            # list only has onsets
-            syllable_gt_onsets = [s[0] for s in syllable_list_gt]
-            syllable_gt_labels = [s[2] for s in syllable_list_gt]
-
-            phoneme_gt_onsets = [p[0] for p in phoneme_list_gt]
-            phoneme_gt_labels = [p[2] for p in phoneme_list_gt]
-
-            syllable_score_onsets = [s[0] for s in syllable_list_score]
-            phoneme_score_onsets = [p[0] for p in phoneme_list_score]
-
-            # syllable score durations and labels
-            syllable_score_durs = [sls[1] - sls[0] for sls in syllable_list_score]
-            syllable_score_labels = [sls[2] for sls in syllable_list_score]
+            frame_start, frame_end, \
+            time_start, time_end, \
+            syllable_gt_onsets, syllable_gt_labels, \
+            phoneme_gt_onsets, phoneme_gt_labels, \
+            syllable_score_onsets, syllable_score_labels, \
+            phoneme_score_onsets, phoneme_score_labels, \
+            syllable_score_durs, phoneme_list_score = \
+                            gt_score_preparation_helper(gtSyllableLists,
+                                                        scoreSyllableLists,
+                                                        gtPhonemeLists,
+                                                        scorePhonemeLists,
+                                                        ii_line)
 
             # phoneme durations and labels
             phoneme_score_durs = []
-            phoneme_score_labels = []
             idx_syllable_score_phoneme = [] # index of syllable onsets in phoneme onsets list
             for ii_pls, pls in enumerate(phoneme_list_score):
                 # where meeting next syllable or is the last phoneme
                 phoneme_score_durs.append(pls[1] - pls[0])
-                phoneme_score_labels.append(pls[2])
 
                 if pls[0] in syllable_score_onsets:
                     idx_syllable_score_phoneme.append(ii_pls)
@@ -294,12 +276,28 @@ def phonemeSegAllRecordings(wav_path,
             # print(phoneme_score_labels)
 
             # remove the silence phonemes
-            if '' in phoneme_gt_labels:
-                removeSilence(phoneme_gt_onsets_0start, phoneme_gt_labels)
+            if u'' in phoneme_gt_labels:
+                phoneme_gt_onsets_0start, phoneme_gt_labels = removeSilence(phoneme_gt_onsets_0start, phoneme_gt_labels)
 
-            if '' in phoneme_score_labels:
-                removeSilence(boundaries_phoneme_start_time, phoneme_score_labels)
+            if u'' in phoneme_score_labels:
+                boundaries_phoneme_start_time, phoneme_score_labels = removeSilence(boundaries_phoneme_start_time, phoneme_score_labels)
 
+            # print(phoneme_gt_labels)
+            # print(phoneme_score_labels)
+
+            results_aggregation_save_helper(syllable_gt_onsets_0start,
+                                            syllable_gt_labels,
+                                            boundaries_syllable_start_time,
+                                            syllable_score_labels,
+                                            phoneme_gt_onsets_0start,
+                                            phoneme_gt_labels,
+                                            boundaries_phoneme_start_time,
+                                            phoneme_score_labels,
+                                            eval_results_path,
+                                            artist_path,
+                                            rn,
+                                            ii_line,
+                                            time_end-time_start)
 
             if plot:
                 figurePlot(mfcc_line,
@@ -335,4 +333,7 @@ if __name__ == '__main__':
                            threshold=0.54,
                            obs_cal='tocal',
                            decoding_method='viterbi',
-                            plot=True)
+                            plot=False)
+
+    run_eval_onset('hsmm')
+    run_eval_segment('hsmm')

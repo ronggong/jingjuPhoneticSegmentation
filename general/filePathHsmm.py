@@ -43,15 +43,15 @@ class_name = 'danAll' # dan role-type
 # cnn_file_name = 'mfccBands_2D_all_optim'
 
 cnn_file_name = 'hsmm_am_timbral'
+cnnModel_name = 'am_cnn'
 
 primarySchool_dataset_root_path     = '/Users/gong/Documents/MTG document/Jingju arias/primary_school_recording'
 
 primarySchool_wav_path = join(primarySchool_dataset_root_path, 'wav')
 primarySchool_textgrid_path = join(primarySchool_dataset_root_path, 'textgrid')
 
-cnnModel_name = 'am_cnn'
 
-eval_results_path = join(root_path, 'eval', 'results', cnnModel_name)
+eval_results_path = join(root_path, 'eval', 'results', 'hsmm', cnn_file_name)
 
 primarySchool_results_path = join(root_path, 'eval', 'joint', 'results')
 

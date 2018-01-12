@@ -89,7 +89,7 @@ def featureReshape(feature, nlen=10):
     return feature_reshaped
 
 from general.parameters import *
-from general.filePath import kerasScaler_path
+from general.filePathHsmm import kerasScaler_path
 import essentia.standard as ess
 import pickle
 

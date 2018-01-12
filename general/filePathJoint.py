@@ -15,7 +15,7 @@ scaler_joint_model_path = join(joint_cnn_model_path,
 
 cnnModel_name = 'jan_joint'
 
-eval_results_path = join(root_path, 'eval', 'results', cnnModel_name)
+eval_results_path = join(root_path, 'eval', 'results', 'joint', cnnModel_name)
 
 primarySchool_results_path = join(root_path, 'eval', 'joint', 'results')
 

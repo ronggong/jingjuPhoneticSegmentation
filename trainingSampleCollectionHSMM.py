@@ -1,5 +1,5 @@
 import numpy as np
-from general.filePath import *
+from general.filePathHsmm import *
 from general.parameters import *
 from general.phonemeMap import dic_pho_map, dic_pho_label
 from general.textgridParser import syllableTextgridExtraction

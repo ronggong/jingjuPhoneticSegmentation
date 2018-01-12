@@ -9,6 +9,7 @@ def removeSilence(phn_onsets, phn_labels):
     phn_labels = list(phn_labels)
 
     for ii in reversed(range(len(phn_labels))):
-        if not len(phn_labels[ii]):
+        if phn_labels[ii] == u'':
             phn_onsets.pop(ii)
             phn_labels.pop(ii)
+    return phn_onsets, phn_labels
