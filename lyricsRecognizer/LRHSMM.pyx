@@ -50,6 +50,7 @@ class LRHSMM(_LRHMM):
         self.phns_durs      = phns_durs        # duration of each state
         self.proportionality_std = proportionality_std
         self.n              = len(self.transcription)
+        self.tau            = None
         self._initialStateDist()
 
     def _initialStateDist(self):
@@ -71,6 +72,7 @@ class LRHSMM(_LRHMM):
         '''
 
         tau = len(observations)
+        self.tau = tau
 
         # Forward quantities
         forwardDelta        = np.ones((self.n,tau),dtype=self.precision)
@@ -91,26 +93,29 @@ class LRHSMM(_LRHMM):
                previousState,\
                 state,\
                stateIn,\
-                occupancy
+                occupancy,\
+                tau
 
     @cython.cdivision(True)
     @cython.boundscheck(False)
     @cython.wraparound(False)
-    def _viterbiHSMM(self,observations, kerasModel=None):
+    def _viterbiHSMM(self,
+                     forwardDelta,
+                     previousState,
+                     state,
+                     stateIn,
+                     occupancy,
+                     tau,
+                     obsOnsetPhn):
         """
         HSMMs Viterbi decoding, from Guedon 2007 paper
         :param observations:
         :param am:
         :return:
         """
-
-        forwardDelta,\
-           previousState,\
-            state,\
-           stateIn,\
-            occupancy      = self._inferenceInit(observations)
-
-        tau = len(observations)
+        # tried having observation onset function in the decoding, not working,
+        # tried to insert the term cObsOnsetPhn[t] in calculating prod_occupancy
+        # cdef double [::1] cObsOnsetPhn      = np.log(obsOnsetPhn, dtype='float64')
 
         cdef double [:, ::1] cA             = np.log(self.A)
         cdef double [:, ::1] cforwardDelta  = forwardDelta
@@ -119,24 +124,13 @@ class LRHSMM(_LRHMM):
         cdef double [:, ::1] cstateIn       = stateIn
         cdef int [:, ::1] coccupancy        = occupancy
 
-        # calculate the observation probability and normalize for each frame into pdf sum(B_map[:,t])=1
-        self.mapBKeras(observations, kerasModel=kerasModel)
-        # obs = np.exp(self.B_map)
-        # obs /= np.sum(obs,axis=0)
-
         # cdef double [:, ::1] cobs   = np.log(obs)
         cdef double [::1] cpi       = np.log(self.pi)
-        cdef double cmaxForward     = -float('inf') # max value in time T (max)
+        # cdef double cmaxForward     = -float('inf') # max value in time T (max)
 
         # print pi
         # print self.net.getStates()
         # print self.transcription
-
-
-        # get transition probability and others
-        # A,idx_loop_enter,idx_loop_skip_self,tracker_loop_enter = self.viterbiTransitionVaryingHelper()
-
-        # print self.A
 
         # predefine M,d,D
         M = []
@@ -151,8 +145,8 @@ class LRHSMM(_LRHMM):
             mean_j          = self.phns_durs[j]
             std_j           = self.proportionality_std*mean_j
             M.append(int((mean_j+10*std_j)/hopsize_t)-1)
-            d[j,:]          = norm.logpdf(x,mean_j,std_j)
-            D[j,:]          = norm.logsf(x,mean_j,std_j)
+            d[j,:]          = norm.logpdf(x, mean_j, std_j)
+            D[j,:]          = norm.logsf(x, mean_j, std_j)
 
         cdef int [::1] cM   = np.array(M,dtype=np.intc)
         cdef double[:,::1] cd = d
@@ -160,7 +154,9 @@ class LRHSMM(_LRHMM):
 
         # version in guedon 2003 paper
         for t in range(0,tau):
-            print t
+            # print t
+            # if t > 20:
+            #     raise
             for j in xrange(self.n):
 
                 xsampa_state = self.transcription[j]
@@ -171,14 +167,16 @@ class LRHSMM(_LRHMM):
                     for u in range(1,min(t+1,cM[j])+1):
                         observ += self.B_map[xsampa_state][t-u+1]
                         if u < t+1:
+                            # prod_occupancy = observ+cd[j][u]+cstateIn[j,t-u+1]+cObsOnsetPhn[t]
                             prod_occupancy = observ+cd[j][u]+cstateIn[j,t-u+1]
-                            # print t, j, prod_occupancy, observ, cd[j][u], cstateIn[j,t-u+1]
+                            # print t, j, u, prod_occupancy, observ, cd[j][u], cstateIn[j,t-u+1]
                             if prod_occupancy > cforwardDelta[j,t]:
                                 cforwardDelta[j,t]   = prod_occupancy
                                 cpreviousState[j,t]  = cstate[j,t-u+1]
                                 coccupancy[j,t]      = u
                         else:
                             # print u, len(occupancies_j)
+                            # prod_occupancy  = observ+cd[j][t+1]+cpi[j]+cObsOnsetPhn[t]
                             prod_occupancy  = observ+cd[j][t+1]+cpi[j]
                             # print t, j, prod_occupancy, observ, d[j][u], cpi[j]
                             if prod_occupancy > cforwardDelta[j,t]:
@@ -189,6 +187,7 @@ class LRHSMM(_LRHMM):
                     for u in range(1,min(tau,cM[j])+1):
                         observ += self.B_map[xsampa_state][tau-u]
                         if u < tau:
+                            # prod_survivor = observ+cD[j][u]+cstateIn[j,tau-u]+cObsOnsetPhn[tau-1]
                             prod_survivor = observ+cD[j][u]+cstateIn[j,tau-u]
                             # print t, j, prod_survivor, observ, cD[j][u], cstateIn[j,tau-u]
                             if prod_survivor > cforwardDelta[j,tau-1]:
@@ -197,6 +196,7 @@ class LRHSMM(_LRHMM):
                                 coccupancy[j,tau-1]      = u
 
                         else:
+                            # prod_survivor = observ+cD[j][tau]+cpi[j]+cObsOnsetPhn[tau-1]
                             prod_survivor = observ+cD[j][tau]+cpi[j]
                             # print t, j, prod_survivor, observ, cD[j][u], cpi[j]
                             if prod_survivor > cforwardDelta[j,tau-1]:
@@ -216,7 +216,7 @@ class LRHSMM(_LRHMM):
 
         # termination: find the maximum probability for the entire sequence (=highest prob path)
 
-        posteri_prob   = 0
+        # posteri_prob   = 0
 
         # print self.idx_final_tail
         # print i
@@ -243,21 +243,9 @@ class LRHSMM(_LRHMM):
                 path[t-u] = cpreviousState[j,t]
             t = t-u
 
-        '''
-        t = tau-1
-
-        while t>=0:
-            j = cpath[t]
-            u = coccupancy[j,t]
-            # print t,j,u
-            for v in xrange(1,u):
-                cpath[t-v] = j
-            if t >= u:
-                cpath[t-u] = cpreviousState[j,t]
-            t = t-u
-        '''
 
         # avoid memory leaks
+        # cObsOnsetPhn    = None
         cA              = None
         cforwardDelta   = None
         cpreviousState  = None
@@ -271,7 +259,7 @@ class LRHSMM(_LRHMM):
         cd              = None
         cD              = None
 
-        return path,posteri_prob
+        return path, posteri_prob
 
     def _pathStateDur(self,path):
         '''
@@ -294,15 +282,16 @@ class LRHSMM(_LRHMM):
         self.net.plotNetwork(path)
 
     def _getBmap(self):
-        B_map = np.array([])
-        for ii,t in enumerate(self.transcription):
-            if not len(B_map):
-                B_map = self.B_map[t]
-            else:
-                B_map = np.vstack((B_map, self.B_map[t]))
+        """
+        from the transcription dictionary obtain the emission matrix
+        :return:
+        """
+        B_map = np.zeros((len(self.transcription), self.tau))
+        for ii_trans, trans in enumerate(self.transcription):
+            B_map[ii_trans, :] = self.B_map[trans]
         return B_map
 
-    def _pathPlot(self,transcription_gt,path_gt,path):
+    def _pathPlot(self, transcription_gt, path_gt, path):
         '''
         plot ground truth path and decoded path
         :return:
@@ -347,11 +336,11 @@ class LRHSMM(_LRHMM):
         # plt.ylabel('states')
         # plt.yticks(y, transcription_unique, rotation='horizontal')
         # plt.show()
-        plt.pcolormesh(x,y,B_map)
-        plt.plot(x,path,'b',linewidth=3)
+        plt.pcolormesh(x, y, B_map)
+        plt.plot(x, path, 'b', linewidth=3)
         # for onset in path_gt:
         #     plt.axvline(onset, color='r', linewidth=2)
-        plt.plot(x,path_gt,'r',linewidth=2)
+        plt.plot(x, path_gt, 'r', linewidth=2)
         plt.xlabel('time (s)')
         plt.ylabel('states')
         plt.yticks(y, self.transcription, rotation='horizontal')

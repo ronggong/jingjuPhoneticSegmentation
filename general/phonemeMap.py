@@ -287,9 +287,15 @@ dic_pho_map_topo = {u'': u'sil',
 
 
 # run_eval_segment segment eval to ignore these pairs
-misMatchIgnore = [[u'7', u'O'], [u'O', u'7'],
-                   [u'7', u'@'], [u'@', u'7'],
-                   [u'1', u'i'], [u'i', u'1']]
+misMatchIgnorePhn = [[u'7', u'O'], [u'O', u'7'],
+                     [u'7', u'@'], [u'@', u'7'],
+                     [u'1', u'i'], [u'i', u'1']]
+
+misMatchIgnoreSyl = [[u'di', u'de'], [u'de', u'di'],
+                     [u'zi', u'za'], [u'za', u'zi'],
+                     [u'ne', u'na'], [u'na', u'ne'],
+                     [u'bai', u'be'], [u'be', u'bai'],
+                     [u'luei', u'lei'], [u'lei', u'luei']]
 
 tails_comb_n        = [u'an_n', u'in_n',u'i_n', u'@_n', u'_n', u'@n_n', u'a_n', u'yn_n',u'y_n', u'E_n', u'En_n']
 tails_comb_N        = [u'AN_N', u'iN_N', u'UN_N', u'7N_N', u'_N', u'a_N',  u'AU^_N',u'oU^_N']

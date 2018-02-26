@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-'''
+"""
 Syllable segmentation evaluation: landmark and boundary evaluations
 Only evaluate boundary onset
 
@@ -12,9 +12,11 @@ for the automatic segmentation of speech into syllables
 
 [3] EVALUATION FRAMEWORK FOR AUTOMATIC SINGING
 TRANSCRIPTION
-'''
+"""
 
-from phonemeMap import misMatchIgnore
+from phonemeMap import misMatchIgnorePhn
+from phonemeMap import misMatchIgnoreSyl
+
 
 def onsetEval(groundtruthOnsets, detectedOnsets, tolerance, label):
     """
@@ -53,23 +55,21 @@ def onsetEval(groundtruthOnsets, detectedOnsets, tolerance, label):
 def metrics(numDetected, numGroundtruth, numCorrect):
     recall = (numCorrect/float(numGroundtruth))*100
     precision = (numCorrect/float(numDetected))*100
-    if precision==0 and recall == 0:
+    if precision == 0 and recall == 0:
         F1 = 0
     else:
         F1 = 2*(precision*recall)/(precision+recall)
 
     return recall, precision, F1
 
+
 def segmentEval(gt_resample, detected_resample):
 
     sampleCorrect = 0
-    # missMatchPatterns = []
     for ii in range(len(gt_resample)):
-        if gt_resample[ii] == detected_resample[ii] or [gt_resample[ii], detected_resample[ii]] in misMatchIgnore:
+        if gt_resample[ii] == detected_resample[ii] or \
+                        [gt_resample[ii], detected_resample[ii]] in misMatchIgnorePhn or \
+                        [gt_resample[ii], detected_resample[ii]] in misMatchIgnoreSyl:
             sampleCorrect += 1
-        # else:
-        #     if [gt_resample[ii], detected_resample[ii]] not in missMatchPatterns:
-        #         missMatchPatterns.append([gt_resample[ii], detected_resample[ii]])
-    # print(missMatchPatterns)
 
     return sampleCorrect, len(gt_resample)

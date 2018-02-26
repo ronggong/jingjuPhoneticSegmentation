@@ -1,81 +1,36 @@
-'''
- * Copyright (C) 2017  Music Technology Group - Universitat Pompeu Fabra
- *
- * This file is part of jingjuSingingPhraseMatching
- *
- * pypYIN is free software: you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License as published by the Free
- * Software Foundation (FSF), either version 3 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the Affero GNU General Public License
- * version 3 along with this program.  If not, see http://www.gnu.org/licenses/
- *
- * If you have any problem about this python version code, please contact: Rong Gong
- * rong.gong@upf.edu
- *
- *
- * If you want to refer this code, please use this article:
- *
-'''
-
 from os.path import join,dirname
-# from parameters import am
 
-###################################
-###### set this dataset path ######
-###################################
+root_path = join(dirname(__file__),'..')
 
-# dataset_path = '/Users/gong/Documents/MTG document/Jingju arias/jingju_a_cappella_singing_dataset/'
-# dataset_path = '/path/to/your/jingju_a_cappella_singing_dataset/'
+# change this to your folder
+path_jingju_dataset = '/media/gong/ec990efa-9ee0-4693-984b-29372dcea0d1/Data/RongGong'
 
-root_path    = join(dirname(__file__),'..')
+# primary school dataset path
+primarySchool_dataset_root_path = join(path_jingju_dataset, 'primary_school_recording')
 
-# role-type class
-class_name = 'danAll' # dan role-type
-# class_name = 'laosheng' # laosheng role-type
+# nacta dataset part 1
+nacta_dataset_root_path = join(path_jingju_dataset, 'jingju_a_cappella_singing_dataset')
 
-# cnn_file_name = 'mfccBands_2D_all_optim'
+# nacta 2017 dataset part 2
+nacta2017_dataset_root_path = join(path_jingju_dataset, 'jingju_a_cappella_singing_dataset_extended_nacta2017')
 
-cnn_file_name = 'hsmm_am_timbral'
-cnnModel_name = 'am_cnn'
-
-primarySchool_dataset_root_path     = '/Users/gong/Documents/MTG document/Jingju arias/primary_school_recording'
+# acoustic model training dataset path
+# change this to your folder
+data_am_path = '/Users/gong/Documents/MTG document/dataset/acousticModels'
 
 primarySchool_wav_path = join(primarySchool_dataset_root_path, 'wav')
 primarySchool_textgrid_path = join(primarySchool_dataset_root_path, 'textgrid')
 
-
+cnn_file_name = 'hsmm_am_timbral'
 eval_results_path = join(root_path, 'eval', 'results', 'hsmm', cnn_file_name)
 
 primarySchool_results_path = join(root_path, 'eval', 'joint', 'results')
 
-# path for keras cnn models
-# kerasScaler_path        = join(root_path, 'cnnModels', class_name,
-#                                'scaler_' + class_name + '_phonemeSeg_mfccBands2D.pkl')
-# kerasModels_path        = join(root_path, 'cnnModels', class_name,
-#                                'keras.cnn_' + cnn_file_name + '.h5')
-
-kerasScaler_path        = join(root_path, 'cnnModels', 'scaler_'+cnn_file_name+'.pkl')
-kerasModels_path        = join(root_path, 'cnnModels', cnn_file_name + '.h5')
-
-
-# nacta 2017 dataset part 2
-nacta2017_dataset_root_path     = '/Users/gong/Documents/MTG document/Jingju arias/jingju_a_cappella_singing_dataset_extended_nacta2017'
-
-# nacta dataset part 1
-nacta_dataset_root_path     = '/Users/gong/Documents/MTG document/Jingju arias/jingju_a_cappella_singing_dataset'
+kerasScaler_path = join(root_path, 'cnnModels', 'hsmm', 'scaler_'+cnn_file_name+'.pkl')
+kerasModels_path = join(root_path, 'cnnModels', 'hsmm', cnn_file_name)
 
 nacta2017_wav_path = join(nacta2017_dataset_root_path, 'wav')
 nacta2017_textgrid_path = join(nacta2017_dataset_root_path, 'textgridDetails')
 
 nacta_wav_path = join(nacta_dataset_root_path, 'wav')
 nacta_textgrid_path = join(nacta_dataset_root_path, 'textgrid')
-
-# acoustic model training dataset path
-data_path_am = '/Users/gong/Documents/MTG document/dataset/acousticModels'

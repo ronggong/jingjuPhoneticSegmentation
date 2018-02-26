@@ -2,42 +2,60 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e71895b6-0cda-4f78-96f3-5d7a2808647a" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_data/labels_joint_phoneme.pickle.gz" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_data/labels_joint_syllable.pickle.gz" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_data/sample_weights_joint_phoneme.pickle.gz" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_data/sample_weights_joint_syllable.pickle.gz" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/eval/onsetSegmentEval/runEval.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/helperCode.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_scripts/feature_generator_joint.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_scripts/hpcDLScriptsJoint/keras_cnn_syllableSeg_jan_madmom_original.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_scripts/hpcDLScriptsJoint/keras_cnn_syllableSeg_jan_madmom_original.sh" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_scripts/models_joint.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/shiwenhui_tingxiongyan.TextGrid" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/wangjiangting_dushoukong.TextGrid" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/wangjiangting_zhijianta.TextGrid" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/xixiangji_biyuntian.TextGrid" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/xixiangji_diyilai.TextGrid" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/xixiangji_luanchouduo.TextGrid" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/xixiangji_manmufeng.TextGrid" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/xixiangji_xianzhishuo.TextGrid" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/xixiangji_zhenmeijiu.TextGrid" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/yutangchun_yutangchun.TextGrid" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/zhuangyuanmei_daocishi.TextGrid" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/zhuangyuanmei_fudingkui.TextGrid" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/zhuangyuanmei_tianbofu.TextGrid" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/zhuangyuanmei_zhenzhushan.TextGrid" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dataset/textgrid/zhuangyuanmei_zinari.TextGrid" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/general/filePath.py" afterPath="$PROJECT_DIR$/general/filePathHsmm.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cnnModels/hsmm/old/hsmm_am_timbral.h5" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/audio_preprocessing_essentia.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/baseline_forced_alignment.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cnnModels/hsmm/scaler_hsmm_am_timbral.pkl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/eval_stats.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/general/utilFunctions.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/jointDecodingParameterOptimization.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/plotCode.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/proposed_method_pipeline.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/textgrid_sanity_check/sanity_check.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_scripts_new_hpc/data_preparation.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_scripts_new_hpc/feature_generator.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_scripts_new_hpc/feature_generator_joint.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_scripts_new_hpc/hpcDLScripts/hsmm_am_timbral.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_scripts_new_hpc/hpcDLScripts/hsmm_am_timbral.sh" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_scripts_new_hpc/hpcDLScriptsJoint/keras_cnn_syllableSeg_jan_madmom_original.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_scripts_new_hpc/hpcDLScriptsJoint/keras_cnn_syllableSeg_jan_madmom_original.sh" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_scripts_new_hpc/models.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/training_scripts_new_hpc/models_joint.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/HSMMPhonemeSeg.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/cnnModels/hsmm_am_timbral.h5" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/cnnModels/scaler_hsmm_am_timbral.pkl" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/eval/metrics.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/eval/onsetSegmentEval/utilFunctions.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/onsetFunctionCalcJoint.py" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lyricsRecognizer/audioPreprocessing.py" afterPath="$PROJECT_DIR$/audio_preprocessing.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/viterbiDecoding.pyx" afterPath="$PROJECT_DIR$/viterbiDecodingPhonemeSeg.pyx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cnnModels/joint/jan_joint0.h5" afterPath="$PROJECT_DIR$/cnnModels/joint/jan_joint0.h5" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cnnModels/joint/jan_joint1.h5" afterPath="$PROJECT_DIR$/cnnModels/joint/jan_joint1.h5" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cnnModels/joint/jan_joint2.h5" afterPath="$PROJECT_DIR$/cnnModels/joint/jan_joint2.h5" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cnnModels/joint/jan_joint3.h5" afterPath="$PROJECT_DIR$/cnnModels/joint/jan_joint3.h5" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cnnModels/joint/jan_joint4.h5" afterPath="$PROJECT_DIR$/cnnModels/joint/jan_joint4.h5" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/training_data/labels_joint_phoneme.pickle.gz" afterPath="$PROJECT_DIR$/training_data/labels_joint_phoneme.pickle.gz" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/training_data/labels_joint_syllable.pickle.gz" afterPath="$PROJECT_DIR$/training_data/labels_joint_syllable.pickle.gz" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/training_data/sample_weights_joint_phoneme.pickle.gz" afterPath="$PROJECT_DIR$/training_data/sample_weights_joint_phoneme.pickle.gz" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/training_data/sample_weights_joint_syllable.pickle.gz" afterPath="$PROJECT_DIR$/training_data/sample_weights_joint_syllable.pickle.gz" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/jingjuPhoneticSegmentation.iml" afterPath="$PROJECT_DIR$/.idea/jingjuPhoneticSegmentation.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/HSMMPhonemeSeg.py" afterPath="$PROJECT_DIR$/HSMMPhonemeSeg.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cnnModels/joint/scaler_joint.pkl" afterPath="$PROJECT_DIR$/cnnModels/joint/scaler_joint.pkl" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/eval/onsetSegmentEval/evaluation.py" afterPath="$PROJECT_DIR$/eval/onsetSegmentEval/evaluation.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/eval/onsetSegmentEval/utilFunctions.py" afterPath="$PROJECT_DIR$/eval/onsetSegmentEval/utilFunctions.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/eval/onsetSegmentEval/runEval.py" afterPath="$PROJECT_DIR$/eval/onsetSegmentEval/runEval.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/general/filePathHsmm.py" afterPath="$PROJECT_DIR$/general/filePathHsmm.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/general/filePathJoint.py" afterPath="$PROJECT_DIR$/general/filePathJoint.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/general/parameters.py" afterPath="$PROJECT_DIR$/general/parameters.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/general/phonemeMap.py" afterPath="$PROJECT_DIR$/general/phonemeMap.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lyricsRecognizer/audioPreprocessing.py" afterPath="$PROJECT_DIR$/lyricsRecognizer/audioPreprocessing.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/onsetFunctionCalcJoint.py" afterPath="$PROJECT_DIR$/onsetFunctionCalcJoint.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/general/trainTestSeparation.py" afterPath="$PROJECT_DIR$/general/trainTestSeparation.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/helperCode.py" afterPath="$PROJECT_DIR$/helperCode.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lyricsRecognizer/LRHMM.py" afterPath="$PROJECT_DIR$/lyricsRecognizer/LRHMM.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lyricsRecognizer/LRHSMM.pyx" afterPath="$PROJECT_DIR$/lyricsRecognizer/LRHSMM.pyx" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trainingSampleCollectionHSMM.py" afterPath="$PROJECT_DIR$/trainingSampleCollectionHSMM.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/training_scripts/data_preparation.py" afterPath="$PROJECT_DIR$/training_scripts/data_preparation.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trainingSampleCollectionJoint.py" afterPath="$PROJECT_DIR$/trainingSampleCollectionJoint.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/training_scripts/hpcDLScripts/hsmm_am_timbral.sh" afterPath="$PROJECT_DIR$/training_scripts/hpcDLScripts/hsmm_am_timbral.sh" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/training_scripts/hpcDLScriptsJoint/keras_cnn_syllableSeg_jan_madmom_original.sh" afterPath="$PROJECT_DIR$/training_scripts/hpcDLScriptsJoint/keras_cnn_syllableSeg_jan_madmom_original.sh" />
     </list>
     <ignored path="jingjuPhoneticSegmentation.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -50,14 +68,21 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$keras_cnn_syllableSeg_jordi_timbral_madmom_original.coverage" NAME="keras_cnn_syllableSeg_jordi_timbral_madmom_original Coverage Results" MODIFIED="1515626318391" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/training_scripts/hpcDLScripts" />
-    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$runEval.coverage" NAME="runEval Coverage Results" MODIFIED="1515758804657" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/eval/onsetSegmentEval" />
-    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$trainingSampleCollectionJoint.coverage" NAME="trainingSampleCollectionJoint Coverage Results" MODIFIED="1515689879144" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$featureCollection.coverage" NAME="featureCollection Coverage Results" MODIFIED="1515689831639" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
-    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$HSMMPhonemeSeg.coverage" NAME="HSMMPhonemeSeg Coverage Results" MODIFIED="1515759065341" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$demo.coverage" NAME="demo Coverage Results" MODIFIED="1485427004340" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$onsetFunctionCalcJoint.coverage" NAME="onsetFunctionCalcJoint Coverage Results" MODIFIED="1515713673183" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$keras_cnn_syllableSeg_jan_madmom_original.coverage" NAME="keras_cnn_syllableSeg_jan_madmom_original Coverage Results" MODIFIED="1515691124104" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/training_scripts/hpcDLScriptsJoint" />
+    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$featureCollection.coverage" NAME="featureCollection Coverage Results" MODIFIED="1515689831639" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
+    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$evalStats.coverage" NAME="evalStats Coverage Results" MODIFIED="1519172947155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/eval/onsetSegmentEval" />
+    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$runEval.coverage" NAME="runEval Coverage Results" MODIFIED="1515864588067" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/eval/onsetSegmentEval" />
+    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$keras_cnn_syllableSeg_jan_madmom_original.coverage" NAME="keras_cnn_syllableSeg_jan_madmom_original Coverage Results" MODIFIED="1518910452503" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/training_scripts_new_hpc/hpcDLScriptsJoint" />
+    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$trainingSampleCollectionJoint.coverage" NAME="trainingSampleCollectionJoint Coverage Results" MODIFIED="1518633494444" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$sanity_check.coverage" NAME="sanity_check Coverage Results" MODIFIED="1518537353391" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/textgrid_sanity_check" />
+    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$jointDecodingParameterOptimization.coverage" NAME="jointDecodingParameterOptimization Coverage Results" MODIFIED="1516990410552" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$trainingSampleCollectionHSMM.coverage" NAME="trainingSampleCollectionHSMM Coverage Results" MODIFIED="1517928893125" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$keras_cnn_syllableSeg_jordi_timbral_madmom_original.coverage" NAME="keras_cnn_syllableSeg_jordi_timbral_madmom_original Coverage Results" MODIFIED="1515626318391" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/training_scripts/hpcDLScripts" />
+    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$LRHSMM_pyx.coverage" NAME="LRHSMM.pyx Coverage Results" MODIFIED="1516118485349" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/lyricsRecognizer" />
+    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$onsetFunctionCalcJoint.coverage" NAME="onsetFunctionCalcJoint Coverage Results" MODIFIED="1518537082101" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$proposed_method_pipeline.coverage" NAME="proposed_method_pipeline Coverage Results" MODIFIED="1519665266211" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$HSMMPhonemeSeg.coverage" NAME="HSMMPhonemeSeg Coverage Results" MODIFIED="1519667610077" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/jingjuPhoneticSegmentation$helperCode.coverage" NAME="helperCode Coverage Results" MODIFIED="1516902697992" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -78,27 +103,44 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>number_train</find>
-      <find>number_test</find>
-      <find>recording</find>
-      <find>recordings</find>
-      <find>number_recording</find>
-      <find>self.lyrics</find>
-      <find>proportionality_std</find>
-      <find>am</find>
-      <find>self.mean_dur_state</find>
-      <find>rgongcnnSyllableSeg_jordi_timbral_madmom_original</find>
-      <find>model_keras</find>
-      <find>print</find>
-      <find>phoneme_gt_la</find>
       <find>phoneme_score_la</find>
       <find>int</find>
       <find>u''</find>
+      <find>observ</find>
+      <find>cA</find>
+      <find>viterbiDeco</find>
+      <find>nvc</find>
+      <find>tau</find>
+      <find>ii_line</find>
+      <find>phoneme_gt_onsets_0start</find>
+      <find>boundaries_phoneme_start_time</find>
+      <find>phoneme_start_frame</find>
+      <find>phoneme_score_durs</find>
+      <find>phoneme_score_labels_grouped_by_syllables</find>
+      <find>cdelta</find>
+      <find>cdelta_current</find>
+      <find>delta_current</find>
+      <find>phoneme_score_labels</find>
+      <find>print</find>
+      <find>recordings</find>
+      <find>cnnModel</find>
+      <find>silence</find>
+      <find>cnnModel_name</find>
+      <find>eval_filename</find>
+      <find>eval_results_path</find>
+      <find>run_eval</find>
+      <find>lsxp-Wo_zheng_zai-Kong_cheng_ji01-upf</find>
+      <find>get_recordings</find>
+      <find>remove_silence</find>
+      <find>metrics</find>
     </findStrings>
     <replaceStrings>
       <replace>self.phns_durs</replace>
       <replace>acousticModelsTraining</replace>
     </replaceStrings>
+    <dirStrings>
+      <dir>$PROJECT_DIR$/general</dir>
+    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -111,57 +153,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/speechSegmentation/Aversano.py" />
-        <option value="$PROJECT_DIR$/speechSegmentation/Estevan.py" />
-        <option value="$PROJECT_DIR$/speechSegmentation/Hoang.py" />
-        <option value="$PROJECT_DIR$/VUV/vuvAlgos.py" />
-        <option value="$PROJECT_DIR$/dataset/wav/readme.txt" />
-        <option value="$PROJECT_DIR$/output/feature/readme.txt" />
-        <option value="$PROJECT_DIR$/public/features.py" />
-        <option value="$PROJECT_DIR$/patternMethod.py" />
-        <option value="$PROJECT_DIR$/speechSegmentation/Winebarger.py" />
-        <option value="$PROJECT_DIR$/recordingNumber.py" />
-        <option value="$PROJECT_DIR$/public/patternManip.py" />
-        <option value="$PROJECT_DIR$/eval/metrics.py" />
-        <option value="$PROJECT_DIR$/eval/trainTestSeparation.py" />
-        <option value="$PROJECT_DIR$/parameters.py" />
-        <option value="$PROJECT_DIR$/SpeechSegmentation.py" />
-        <option value="$PROJECT_DIR$/VUVclassification.py" />
-        <option value="$PROJECT_DIR$/SVFPatternMethod.py" />
-        <option value="$PROJECT_DIR$/demo.py" />
-        <option value="$PROJECT_DIR$/lyricsRecognizer/makeHSMMNet.py" />
-        <option value="$PROJECT_DIR$/lyricsRecognizer/ParallelLRHSMM.pyx" />
-        <option value="$PROJECT_DIR$/general/trainTestSeparation.py" />
-        <option value="$PROJECT_DIR$/acousticModelsTraining/featureCollection.py" />
-        <option value="$PROJECT_DIR$/lyricsRecognizer/audioPreprocessing.py" />
-        <option value="$PROJECT_DIR$/featureCollection.py" />
-        <option value="$PROJECT_DIR$/featureCollector.py" />
-        <option value="$PROJECT_DIR$/training_scripts/hpcDLScripts/keras_cnn_syllableSeg_jordi_timbral_madmom_original.py" />
-        <option value="$PROJECT_DIR$/training_scripts/models.py" />
+        <option value="$PROJECT_DIR$/jointDecodingParameterOptimization.py" />
+        <option value="$PROJECT_DIR$/training_scripts_new_hpc/data_preparation.py" />
+        <option value="$PROJECT_DIR$/training_scripts_new_hpc/models.py" />
+        <option value="$PROJECT_DIR$/trainingSampleCollectionHSMM.py" />
         <option value="$PROJECT_DIR$/training_scripts/hpcDLScripts/hsmm_am_timbral.sh" />
-        <option value="$PROJECT_DIR$/training_scripts/hpcDLScripts/hsmm_am_timbral.py" />
-        <option value="$PROJECT_DIR$/training_scripts/feature_generator.py" />
-        <option value="$PROJECT_DIR$/general/filePath.py" />
-        <option value="$PROJECT_DIR$/lyricsRecognizer/LRHMM.py" />
-        <option value="$PROJECT_DIR$/lyricsRecognizer/LRHSMM.pyx" />
-        <option value="$PROJECT_DIR$/eval/hsmmEval/utilFunctions.py" />
-        <option value="$PROJECT_DIR$/viterbiDecoding.pyx" />
-        <option value="$PROJECT_DIR$/general/parameters.py" />
-        <option value="$PROJECT_DIR$/dataCollection/trainingSampleCollectionJoint.py" />
+        <option value="$PROJECT_DIR$/training_scripts/hpcDLScriptsJoint/keras_cnn_syllableSeg_jan_madmom_original.sh" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_phoneme_segment_all_0.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_phoneme_segment_all_1.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_phoneme_segment_all_2.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_phoneme_segment_all_3.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_phoneme_segment_all_4.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_phoneme_segment_test_0.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_phoneme_segment_test_1.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_phoneme_segment_test_2.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_phoneme_segment_test_3.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_phoneme_segment_test_4.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_syllable_segment_all_0.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_syllable_segment_all_1.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_syllable_segment_all_2.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_syllable_segment_all_3.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_syllable_segment_all_4.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_syllable_segment_test_0.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_syllable_segment_test_1.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_syllable_segment_test_2.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_syllable_segment_test_3.txt" />
+        <option value="$PROJECT_DIR$/eval/joint/jan_joint_syllable_segment_test_4.txt" />
+        <option value="$PROJECT_DIR$/textgrid_sanity_check/sanity_check.py" />
         <option value="$PROJECT_DIR$/trainingSampleCollectionJoint.py" />
-        <option value="$PROJECT_DIR$/featureCollection/featureCollectorHSMM.py" />
-        <option value="$PROJECT_DIR$/featureCollectorHSMM.py" />
-        <option value="$PROJECT_DIR$/training_scripts/hpcDLScriptsJoint/keras_cnn_syllableSeg_jan_madmom_original.py" />
-        <option value="$PROJECT_DIR$/general/filePathJoint.py" />
-        <option value="$PROJECT_DIR$/general/filePathHsmm.py" />
-        <option value="$PROJECT_DIR$/training_scripts/data_preparation.py" />
+        <option value="$PROJECT_DIR$/training_scripts_new_hpc/hpcDLScripts/hsmm_am_timbral.py" />
+        <option value="$PROJECT_DIR$/training_scripts_new_hpc/hpcDLScripts/hsmm_am_timbral.sh" />
+        <option value="$PROJECT_DIR$/training_scripts_new_hpc/hpcDLScriptsJoint/keras_cnn_syllableSeg_jan_madmom_original.sh" />
+        <option value="$PROJECT_DIR$/training_scripts_new_hpc/models_joint.py" />
+        <option value="$PROJECT_DIR$/training_scripts_new_hpc/hpcDLScriptsJoint/keras_cnn_syllableSeg_jan_madmom_original.py" />
+        <option value="$PROJECT_DIR$/lyricsRecognizer/audioPreprocessing.py" />
+        <option value="$USER_HOME$/keras122-py213/lib/python2.7/site-packages/madmom/audio/signal.py" />
+        <option value="$PROJECT_DIR$/lyricsRecognizer/LRHMM.py" />
         <option value="$PROJECT_DIR$/onsetFunctionCalcJoint.py" />
-        <option value="$PROJECT_DIR$/general/phonemeMap.py" />
-        <option value="$PROJECT_DIR$/eval/onsetSegmentEval/evaluation.py" />
+        <option value="$PROJECT_DIR$/audio_preprocessing_essentia.py" />
+        <option value="$PROJECT_DIR$/audio_preprocessing.py" />
+        <option value="$PROJECT_DIR$/general/trainTestSeparation.py" />
         <option value="$PROJECT_DIR$/eval/onsetSegmentEval/utilFunctions.py" />
+        <option value="$PROJECT_DIR$/eval/onsetSegmentEval/evalStats.py" />
+        <option value="$PROJECT_DIR$/eval/onsetSegmentEval/metrics.py" />
+        <option value="$PROJECT_DIR$/eval/onsetSegmentEval/evaluation.py" />
         <option value="$PROJECT_DIR$/eval/onsetSegmentEval/runEval.py" />
+        <option value="$PROJECT_DIR$/plotCode.py" />
+        <option value="$PROJECT_DIR$/proposed_method_pipeline.py" />
+        <option value="$PROJECT_DIR$/general/utilFunctions.py" />
         <option value="$PROJECT_DIR$/HSMMPhonemeSeg.py" />
-        <option value="$PROJECT_DIR$/helperCode.py" />
+        <option value="$PROJECT_DIR$/general/filePathHsmm.py" />
+        <option value="$PROJECT_DIR$/general/filePathJoint.py" />
       </list>
     </option>
   </component>
@@ -172,9 +214,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="23" />
-    <option name="width" value="1280" />
-    <option name="height" value="773" />
+    <option name="x" value="65" />
+    <option name="y" value="24" />
+    <option name="width" value="1855" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -194,7 +237,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -207,43 +249,15 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="jingjuPhoneticSegmentation" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="jingjuPhoneticSegmentation" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="general" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="jingjuPhoneticSegmentation" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="jingjuPhoneticSegmentation" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="eval" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
       <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/dataset/textgrid/sourceSeparation" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
-    <property name="FullScreen" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="recentsLimit" value="5" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="js.eslint.eslintPackage" value="" />
@@ -251,58 +265,22 @@
     <property name="js-jscs-nodeInterpreter" value="/usr/local/bin/node" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/" />
+      <recent name="$PROJECT_DIR$/eval/onsetSegmentEval" />
+      <recent name="$PROJECT_DIR$/cnnModels/hsmm/old" />
+      <recent name="$PROJECT_DIR$/cnnModels/hsmm" />
+      <recent name="$PROJECT_DIR$/featureCollection" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/cnnModels" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/training_data" />
       <recent name="$PROJECT_DIR$/training_scripts" />
       <recent name="$PROJECT_DIR$/eval/onsetSegmentEval" />
-      <recent name="$PROJECT_DIR$/dataCollection" />
-      <recent name="$PROJECT_DIR$/cnnModels" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/" />
-      <recent name="$PROJECT_DIR$/featureCollection" />
-      <recent name="$PROJECT_DIR$/dataCollection" />
-      <recent name="$PROJECT_DIR$/output/sourceSeparation" />
-      <recent name="$PROJECT_DIR$/dataset/textgrid/sourceSeparation" />
     </key>
   </component>
   <component name="RunManager" selected="Python.HSMMPhonemeSeg">
-    <configuration default="false" name="HSMMPhonemeSeg" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="jingjuPhoneticSegmentation" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/HSMMPhonemeSeg.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="onsetFunctionCalcJoint" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="jingjuPhoneticSegmentation" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/onsetFunctionCalcJoint.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
     <configuration default="false" name="trainingSampleCollectionJoint" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -328,18 +306,36 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/training_scripts/hpcDLScriptsJoint" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/training_scripts_new_hpc/hpcDLScriptsJoint" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="jingjuPhoneticSegmentation" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/training_scripts/hpcDLScriptsJoint/keras_cnn_syllableSeg_jan_madmom_original.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/training_scripts_new_hpc/hpcDLScriptsJoint/keras_cnn_syllableSeg_jan_madmom_original.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="runEval" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration default="false" name="HSMMPhonemeSeg" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="jingjuPhoneticSegmentation" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/baseline_forced_alignment.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="evalStats" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -352,12 +348,27 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="jingjuPhoneticSegmentation" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/eval/onsetSegmentEval/runEval.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/eval_stats.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <configuration default="true" type="ApexTest" factoryName="Apex Test">
+    <configuration default="false" name="proposed_method_pipeline" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="jingjuPhoneticSegmentation" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/proposed_method_pipeline.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="BashConfigurationType" factoryName="Bash">
@@ -586,17 +597,17 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.HSMMPhonemeSeg" />
-      <item index="1" class="java.lang.String" itemvalue="Python.onsetFunctionCalcJoint" />
-      <item index="2" class="java.lang.String" itemvalue="Python.trainingSampleCollectionJoint" />
-      <item index="3" class="java.lang.String" itemvalue="Python.keras_cnn_syllableSeg_jan_madmom_original" />
-      <item index="4" class="java.lang.String" itemvalue="Python.runEval" />
+      <item index="0" class="java.lang.String" itemvalue="Python.trainingSampleCollectionJoint" />
+      <item index="1" class="java.lang.String" itemvalue="Python.keras_cnn_syllableSeg_jan_madmom_original" />
+      <item index="2" class="java.lang.String" itemvalue="Python.HSMMPhonemeSeg" />
+      <item index="3" class="java.lang.String" itemvalue="Python.evalStats" />
+      <item index="4" class="java.lang.String" itemvalue="Python.proposed_method_pipeline" />
     </list>
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.HSMMPhonemeSeg" />
-        <item index="1" class="java.lang.String" itemvalue="Python.runEval" />
-        <item index="2" class="java.lang.String" itemvalue="Python.onsetFunctionCalcJoint" />
+        <item index="1" class="java.lang.String" itemvalue="Python.proposed_method_pipeline" />
+        <item index="2" class="java.lang.String" itemvalue="Python.evalStats" />
         <item index="3" class="java.lang.String" itemvalue="Python.keras_cnn_syllableSeg_jan_madmom_original" />
         <item index="4" class="java.lang.String" itemvalue="Python.trainingSampleCollectionJoint" />
       </list>
@@ -630,7 +641,14 @@
       <option name="project" value="LOCAL" />
       <updated>1515690817138</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="add misMatchIgnore pairs for eval_eval_segment">
+      <created>1515759358062</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1515759358062</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TodoView">
@@ -643,32 +661,32 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="773" extended-state="6" />
+    <frame x="65" y="24" width="1855" height="1056" extended-state="6" />
     <editor active="false" />
     <layout>
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26091763" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.027818449" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug Logs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33039647" sideWeight="0.50277996" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3256785" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32796487" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31864905" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28781205" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Execute Anonymous" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2555066" sideWeight="0.49722" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22859451" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31941545" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2494043" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19089574" sideWeight="0.49722" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Salesforce" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2496329" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug Logs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Execute Anonymous" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32599118" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Salesforce" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -709,7 +727,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="1) speech segmentation functions" />
     <MESSAGE value="initial push to branch" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial push to branch" />
+    <MESSAGE value="add misMatchIgnore pairs for eval_eval_segment" />
+    <option name="LAST_COMMIT_MESSAGE" value="add misMatchIgnore pairs for eval_eval_segment" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -720,304 +739,396 @@
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="7" />
+      <option name="time" value="11" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/lyricsRecognizer/audioPreprocessing.py">
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_onset_all_1.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="23" lean-forward="false" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="23" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/figurePlot.py">
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_onset_all_0.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="412">
-          <caret line="34" column="10" lean-forward="false" selection-start-line="34" selection-start-column="10" selection-end-line="34" selection-end-column="10" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_scripts/models.py">
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_onset_all_2.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="142" column="20" lean-forward="false" selection-start-line="142" selection-start-column="20" selection-end-line="142" selection-end-column="20" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_scripts/hpcDLScripts/hsmm_am_timbral.sh">
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_onset_test_0.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_onset_test_1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_onset_all.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="11" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_onset_test.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="11" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_segment_all.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="25" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_segment_test.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="24" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_onset_all.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="11" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_onset_test.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="11" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_segment_all.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="11" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_segment_test.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="14" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_onset_test_joint_obs_e3_4.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_onset_test_joint_obs_e3.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="11" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_segment_test_joint_obs_e3.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="18" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_segment_test_joint_obs_e3.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="22" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_onset_test_joint_obs_e3.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="11" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_onset_test_joint_obs_e1_0.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_onset_test_joint_obs_e1_1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_onset_test_joint_obs_e1_2.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_onset_test_joint_obs_e1_3.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_onset_test_joint_obs_e1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="11" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_segment_test_joint_obs_e1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="31" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_onset_test_joint_obs_e1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="11" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_segment_test_joint_obs_e1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="25" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lyricsRecognizer/LRHMM.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-123">
-          <caret line="103" column="8" lean-forward="false" selection-start-line="103" selection-start-column="8" selection-end-line="103" selection-end-column="8" />
+        <state relative-caret-position="280">
+          <caret line="128" column="53" lean-forward="false" selection-start-line="128" selection-start-column="53" selection-end-line="128" selection-end-column="53" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/eval/onsetSegmentEval/__init__.py">
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_onset_test_joint_obs_e6.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="11" selection-end-column="34" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_scripts/feature_generator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="40" column="0" lean-forward="false" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dataCollection/__init__.py" />
-    <entry file="file://$PROJECT_DIR$/target_train_danAll.npy" />
-    <entry file="file://$PROJECT_DIR$/parameters.py" />
-    <entry file="file://$PROJECT_DIR$/patternMethod.py" />
-    <entry file="file://$PROJECT_DIR$/demo.py" />
-    <entry file="file://$PROJECT_DIR$/eval/trainTestSeparation.py" />
-    <entry file="file://$PROJECT_DIR$/eval/metrics.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="61" column="56" lean-forward="true" selection-start-line="61" selection-start-column="56" selection-end-line="61" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/training_scripts/hpcDLScripts/hsmm_am_timbral.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="79" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/training_scripts/models_joint.py">
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_segment_test_joint_obs_e6.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="0" column="17" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_scripts/feature_generator_joint.py">
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_onset_test_joint_obs_e6.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="11" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_segment_test_joint_obs_e6.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="8" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/training_scripts_new_hpc/hpcDLScripts/hsmm_am_timbral.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="24" column="101" lean-forward="true" selection-start-line="22" selection-start-column="4" selection-end-line="24" selection-end-column="101" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/training_scripts_new_hpc/hpcDLScriptsJoint/keras_cnn_syllableSeg_jan_madmom_original.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="38" column="18" lean-forward="false" selection-start-line="38" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/helperCode.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2268">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/training_scripts/hpcDLScriptsJoint/keras_cnn_syllableSeg_jan_madmom_original.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="33" column="9" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="33" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/general/filePathJoint.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="27" lean-forward="false" selection-start-line="15" selection-start-column="27" selection-end-line="15" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/general/parameters.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="488">
-          <caret line="36" column="10" lean-forward="false" selection-start-line="36" selection-start-column="10" selection-end-line="36" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/general/filePathHsmm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="45" column="24" lean-forward="false" selection-start-line="45" selection-start-column="24" selection-end-line="45" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/viterbiDecoding.pyx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="8" column="4" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lyricsRecognizer/makeHSMMNet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="45" column="20" lean-forward="false" selection-start-line="45" selection-start-column="11" selection-end-line="45" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lyricsRecognizer/LRHSMM.pyx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2190">
-          <caret line="156" column="53" lean-forward="false" selection-start-line="156" selection-start-column="50" selection-end-line="156" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/general/trainTestSeparation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2055">
-          <caret line="153" column="4" lean-forward="false" selection-start-line="153" selection-start-column="4" selection-end-line="153" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral.txt" />
-    <entry file="file://$PROJECT_DIR$/trainingSampleCollectionJoint.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3082">
-          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
           <folding>
-            <element signature="e#0#9#0" expanded="false" />
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/eval/joint/hsmm_am_timbral_phoneme.txt" />
-    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme.txt" />
-    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable.txt" />
-    <entry file="file://$PROJECT_DIR$/eval/joint/hsmm_am_timbral_syllable.txt" />
-    <entry file="file://$PROJECT_DIR$/trainingSampleCollectionHSMM.py">
+    <entry file="file://$PROJECT_DIR$/audio_preprocessing_essentia.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-825">
-          <caret line="3" column="14" lean-forward="false" selection-start-line="3" selection-start-column="14" selection-end-line="3" selection-end-column="14" />
+        <state relative-caret-position="162">
+          <caret line="9" column="18" lean-forward="false" selection-start-line="9" selection-start-column="18" selection-end-line="9" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/eval/joint/hsmm_am_timbral_phoneme_onset.txt" />
-    <entry file="file://$PROJECT_DIR$/eval/joint/hsmm_am_timbral_syllable_segment.txt" />
-    <entry file="file://$PROJECT_DIR$/eval/joint/hsmm_am_timbral_phoneme_segment.txt" />
-    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_onset.txt">
+    <entry file="file://$PROJECT_DIR$/audio_preprocessing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/eval/joint/jan_joint_phoneme_onset.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="-314">
+          <caret line="25" column="35" lean-forward="true" selection-start-line="25" selection-start-column="35" selection-end-line="25" selection-end-column="35" />
+          <folding>
+            <element signature="e#0#49#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/eval/onsetSegmentEval/utilFunctions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="4" lean-forward="false" selection-start-line="0" selection-start-column="4" selection-end-line="0" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/eval/joint/jan_joint_phoneme_segment.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_phoneme_segment.txt">
+    <entry file="file://$PROJECT_DIR$/eval_stats.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/eval/joint/jan_joint_syllable_segment.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_segment.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/eval/hsmm/hsmm_am_timbral_syllable_onset.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/eval/joint/jan_joint_syllable_onset.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/helperCode.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1125">
-          <caret line="77" column="73" lean-forward="false" selection-start-line="77" selection-start-column="73" selection-end-line="77" selection-end-column="73" />
-          <folding />
+          <caret line="0" column="78" lean-forward="false" selection-start-line="0" selection-start-column="78" selection-end-line="0" selection-end-column="78" />
+          <folding>
+            <element signature="e#83#92#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/eval/onsetSegmentEval/evaluation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="73" column="0" lean-forward="true" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="36">
+          <caret line="2" column="3" lean-forward="false" selection-start-line="2" selection-start-column="3" selection-end-line="2" selection-end-column="3" />
+          <folding>
+            <element signature="e#453#493#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/onsetFunctionCalcJoint.py">
+    <entry file="file://$PROJECT_DIR$/eval/onsetSegmentEval/metrics.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4845">
-          <caret line="323" column="56" lean-forward="false" selection-start-line="323" selection-start-column="56" selection-end-line="323" selection-end-column="56" />
+        <state relative-caret-position="-2084">
+          <caret line="1" column="21" lean-forward="false" selection-start-line="1" selection-start-column="21" selection-end-line="1" selection-end-column="21" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/eval/onsetSegmentEval/runEval.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2175">
-          <caret line="145" column="48" lean-forward="false" selection-start-line="145" selection-start-column="48" selection-end-line="145" selection-end-column="48" />
+        <state relative-caret-position="0">
+          <caret line="0" column="86" lean-forward="false" selection-start-line="0" selection-start-column="86" selection-end-line="0" selection-end-column="86" />
           <folding>
-            <element signature="e#0#68#0" expanded="true" />
+            <element signature="e#91#159#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_scripts/data_preparation.py">
+    <entry file="file://$PROJECT_DIR$/general/parameters.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1530">
-          <caret line="107" column="0" lean-forward="false" selection-start-line="107" selection-start-column="0" selection-end-line="107" selection-end-column="0" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/HSMMPhonemeSeg.py">
+    <entry file="file://$PROJECT_DIR$/figurePlot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="218">
-          <caret line="330" column="26" lean-forward="false" selection-start-line="330" selection-start-column="26" selection-end-line="330" selection-end-column="26" />
+        <state relative-caret-position="-3240">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/general/phonemeMap.py">
+    <entry file="file://$PROJECT_DIR$/plotCode.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="316">
-          <caret line="289" column="3" lean-forward="false" selection-start-line="289" selection-start-column="3" selection-end-line="289" selection-end-column="3" />
+        <state relative-caret-position="-734">
+          <caret line="107" column="26" lean-forward="false" selection-start-line="107" selection-start-column="26" selection-end-line="107" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/general/trainTestSeparation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1588">
+          <caret line="174" column="19" lean-forward="false" selection-start-line="174" selection-start-column="19" selection-end-line="174" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/general/utilFunctions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="5" lean-forward="false" selection-start-line="2" selection-start-column="5" selection-end-line="2" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/baseline_forced_alignment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4428">
+          <caret line="246" column="26" lean-forward="true" selection-start-line="246" selection-start-column="26" selection-end-line="246" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/general/filePathJoint.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="16" column="28" lean-forward="false" selection-start-line="16" selection-start-column="28" selection-end-line="16" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/general/filePathHsmm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="17" column="28" lean-forward="false" selection-start-line="17" selection-start-column="28" selection-end-line="17" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/proposed_method_pipeline.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="126" column="38" lean-forward="false" selection-start-line="126" selection-start-column="0" selection-end-line="127" selection-end-column="0" />
+          <folding>
+            <element signature="e#25#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainingSampleCollectionHSMM.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2384">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>

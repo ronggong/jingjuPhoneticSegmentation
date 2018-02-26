@@ -105,7 +105,13 @@ class _LRHMM(object):
         kerasModel = load_model(kerasModels_path)
         return kerasModel
 
-    def mapBKeras(self, observations, kerasModel, log=True):
+    def mapBKeras(self,
+                  observations,
+                  kerasModel,
+                  log=True,
+                  obs_onset_phn=None,
+                  use_joint_obs=False,
+                  debug_mode=False):
         '''
         dnn observation probability
         :param observations:
@@ -113,28 +119,56 @@ class _LRHMM(object):
         '''
         ##-- set environment of the pdnn
 
-        # observations_concat = [observations, observations, observations, observations, observations, observations]
 
         ##-- call pdnn to calculate the observation from the features
-        # obs = kerasModel.predict_proba(observations_concat, batch_size=128,verbose=0)
         obs = kerasModel.predict(observations, batch_size=128, verbose=0)
 
+        if use_joint_obs: # use obs_joint_phn to adjust the observation matrix
+            obs_mask = np.ones(obs.shape, dtype = np.float64) # init a mask matrix
+            obs_onset_mean = np.mean(obs_onset_phn)
+            penalizing_factor = obs_onset_mean * 1e-6
+
+            bigN = min(3, obs.shape[1]) # choose N biggest observation values in each time stamps to augment
+            idx_states = range(obs.shape[1])
+
+            for ii_obs in range(obs.shape[0]):
+                if obs_onset_phn[ii_obs] <= obs_onset_mean:
+                    obs_mask[ii_obs, :] *= penalizing_factor # penalize the small obs_joint_phn values
+                else:
+                    idx_bigN = np.argpartition(obs[ii_obs, :], -bigN)[-bigN:] # find the first N biggest values idx
+                    idx_small = np.setdiff1d(idx_states, idx_bigN)
+                    obs_mask[ii_obs, :][idx_bigN] *= obs_onset_phn[ii_obs]
+                    obs_mask[ii_obs, :][idx_small] *= penalizing_factor # penalize the small values
+
+            if debug_mode:
+                self._plotObs(obs.T, obs_onset_phn)
+                self._plotObs(obs_mask.T, obs_onset_phn)
+
+            obs *= obs_mask
+
+            if debug_mode:
+                self._plotObs(obs.T, obs_onset_phn)
 
         ##-- read the observation from the output
         if log:
-            obs = np.log(obs)
+            obs = np.log(obs+1e-32) # prevent 0
+
+        if debug_mode:
+            self._plotObs(obs.T, obs_onset_phn)
 
         # print obs.shape, observations.shape
 
-        dim_t       = obs.shape[0]
-        self.B_map  = np.zeros((self.n, dim_t), dtype=self.precision)
+        # dim_t       = obs.shape[0]
+        # self.B_map  = np.zeros((self.n, dim_t), dtype=self.precision)
         # print self.transcription, self.B_map.shape
         # for ii,state in enumerate(self.transcription):
         #     self.B_map[ii,:] = obs[:, dic_pho_label[state]]
 
         self.B_map = {}
         # print self.transcription, self.B_map.shape
-        for ii in xrange(obs.shape[1]):
+        for ii in range(obs.shape[1]):
+            # print(dic_pho_label_inv[ii])
+            # print(obs[:, ii])
             self.B_map[dic_pho_label_inv[ii]] = obs[:, ii]
 
     def _viterbi(self, observations):
@@ -277,11 +311,30 @@ class _LRHMM(object):
         plt.figure()
         print self.B_map.shape
         y = np.arange(self.B_map.shape[0]+1)
-        x = np.arange(self.B_map.shape[1]) * hopsize_phoneticSimilarity / float(fs)
+        x = np.arange(self.B_map.shape[1]) * hopsize_t / float(fs)
         plt.pcolormesh(x,y,self.B_map)
         plt.plot(x,path,'b',linewidth=3)
         plt.plot(x,path_gt,'k',linewidth=3)
         plt.xlabel('time (s)')
         plt.ylabel('states')
+        plt.show()
+
+    def _plotObs(self, obs, obs_joint_phn = None):
+
+        tPlot, axes = plt.subplots(
+            nrows=2, ncols=1, sharex=True, sharey=False,
+            gridspec_kw={'height_ratios': [1, 3]})
+        ax1, ax2 = axes[0], axes[1]
+
+        # obs phns onset array
+        x = np.arange(obs.shape[1]) * hopsize_t
+        if obs_joint_phn is not None:
+            ax1.plot(x, obs_joint_phn)
+
+        # obs matrix plot
+        y = np.arange(obs.shape[0])
+        ax2.pcolormesh(x, y, obs)
+        ax2.set_xlabel('time (s)')
+        ax2.set_ylabel('states')
         plt.show()
 

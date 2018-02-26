@@ -1,44 +1,26 @@
+"""run evaluation on the onset detection results, output results in the eval directory"""
+
 from filePathHsmm import eval_results_path as eval_results_path_hsmm
 from filePathJoint import eval_results_path as eval_results_path_joint
 from filePathHsmm import cnn_file_name
 from filePathJoint import cnnModel_name
-from parameters import *
-from general.trainTestSeparation import getTestTrainRecordingsJoint
-from general.trainTestSeparation import getRecordings
+from general.trainTestSeparation import get_train_test_recordings_joint
+from general.utilFunctions import get_recordings
 from evaluation import onsetEval
 from evaluation import segmentEval
 from evaluation import metrics
+from parameters import *
 import os
 import pickle
 import numpy as np
 
 
-def writeResults2Txt(filename,
-                     decoding_method,
-                     results):
-    """
-
-    :param filename:
-    :param eval_label_str:
-    :param decoding_method:
-    :param precision_nolabel_25:
-    :param recall_nolabel_25:
-    :param F1_nolabel_25:
-    :param precision_25:
-    :param recall_25:
-    :param F1_25:
-    :param precision_nolabel_5:
-    :param recall_nolabel_5:
-    :param F1_nolabel_5:
-    :param precision_5:
-    :param recall_5:
-    :param F1_5:
-    :return:
-    """
+def write_results_2_txt(filename,
+                        decoding_method,
+                        results):
+    """write the evaluation results to a text file"""
 
     with open(filename, 'w') as f:
-        f.write(decoding_method)
-        f.write('\n')
 
         # no label 0.025
         f.write(str(results[0]))
@@ -71,6 +53,7 @@ def writeResults2Txt(filename,
         f.write('\n')
         f.write(str(results[11]))
 
+
 def batch_run_metrics_calculation(sumStat, gt_onsets, detected_onsets):
     """
     Batch run the metric calculation
@@ -91,6 +74,7 @@ def batch_run_metrics_calculation(sumStat, gt_onsets, detected_onsets):
 
             counter += 1
 
+
 def metrics_aggregation(sumStat):
 
     recall_nolabel_25, precision_nolabel_25, F1_nolabel_25 = metrics(sumStat[0, 0], sumStat[0, 1], sumStat[0, 2])
@@ -98,38 +82,47 @@ def metrics_aggregation(sumStat):
     recall_label_25, precision_label_25, F1_label_25 = metrics(sumStat[2, 0], sumStat[2, 1], sumStat[2, 2])
     recall_label_5, precision_label_5, F1_label_5 = metrics(sumStat[3, 0], sumStat[3, 1], sumStat[3, 2])
 
-    return  precision_nolabel_25, recall_nolabel_25, F1_nolabel_25, \
-            precision_nolabel_5, recall_nolabel_5, F1_nolabel_5, \
-            precision_label_25, recall_label_25, F1_label_25, \
-            precision_label_5, recall_label_5, F1_label_5
+    return precision_nolabel_25, recall_nolabel_25, F1_nolabel_25, \
+           precision_nolabel_5, recall_nolabel_5, F1_nolabel_5, \
+           precision_label_25, recall_label_25, F1_label_25, \
+           precision_label_5, recall_label_5, F1_label_5
 
-def run_eval_onset(method='hsmm'):
+
+def run_eval_onset(method='hsmm', param_str='', test_val='test'):
     """
     run evaluation for onset detection
-    :param method  hsmm or joint:
+    :param method: hsmm or joint:
+    :param param_str different configurations and save the results to different txt files
+    :param test_val: string, val or test evaluate for validation or test file
     :return:
     """
     if method == 'hsmm':
-        eval_results_path = eval_results_path_hsmm
+        eval_results_path = eval_results_path_hsmm+param_str
         eval_filename = cnn_file_name
     else:
-        eval_results_path = eval_results_path_joint
+        eval_results_path = eval_results_path_joint+param_str
         eval_filename = cnnModel_name
 
-    primarySchool_test_recordings, _, _ = getTestTrainRecordingsJoint()
+    primarySchool_val_recordings, primarySchool_test_recordings, _, _, _, _ = get_train_test_recordings_joint()
+
+    if test_val == 'test':
+        recordings = primarySchool_test_recordings
+    elif test_val == 'val':
+        recordings = primarySchool_val_recordings
+    else:
+        recordings = primarySchool_test_recordings + primarySchool_val_recordings
 
     sumStat_syllable = np.zeros((4, 3), dtype='int')
     sumStat_phoneme = np.zeros((4, 3), dtype='int')
 
-    for artist, rn in primarySchool_test_recordings:
+    for artist, rn in recordings:
         results_path = os.path.join(eval_results_path, artist)
-        result_files = getRecordings(results_path)
+        result_files = get_recordings(results_path)
 
         for rf in result_files:
             result_filename = os.path.join(results_path, rf+'.pkl')
             syllable_gt_onsets, syllable_detected_onsets, \
-            phoneme_gt_onsets, phoneme_detected_onsets, _ \
-                                        = pickle.load(open(result_filename, 'r'))
+            phoneme_gt_onsets, phoneme_detected_onsets, _ = pickle.load(open(result_filename, 'r'))
 
             batch_run_metrics_calculation(sumStat_syllable, syllable_gt_onsets, syllable_detected_onsets)
             batch_run_metrics_calculation(sumStat_phoneme, phoneme_gt_onsets, phoneme_detected_onsets)
@@ -137,18 +130,23 @@ def run_eval_onset(method='hsmm'):
     result_syllable = metrics_aggregation(sumStat_syllable)
     result_phoneme = metrics_aggregation(sumStat_phoneme)
 
-    current_path = os.path.dirname(os.path.abspath(__file__))
+    if test_val != 'val':
+        current_path = os.path.dirname(os.path.abspath(__file__))
 
-    writeResults2Txt(os.path.join(current_path, '../'+method, eval_filename+'_syllable_onset'+'.txt'),
-                     method,
-                     result_syllable)
+        write_results_2_txt(os.path.join(current_path, '../' + method, eval_filename
+                                         + '_syllable_onset' + '_' + test_val + param_str + '.txt'),
+                            method,
+                            result_syllable)
 
-    writeResults2Txt(os.path.join(current_path, '../'+method, eval_filename+'_phoneme_onset'+'.txt'),
-                     method,
-                     result_phoneme)
+        write_results_2_txt(os.path.join(current_path, '../' + method, eval_filename
+                                         + '_phoneme_onset' + '_' + test_val + param_str + '.txt'),
+                            method,
+                            result_phoneme)
+
+    return result_phoneme[2], result_phoneme[8]
 
 
-def segmentEvalHelper(onsets, line_time):
+def segment_eval_helper(onsets, line_time):
     onsets_frame = np.round(np.array([sgo[0] for sgo in onsets]) / hopsize_t)
 
     resample = [onsets[0][1]]
@@ -166,21 +164,30 @@ def segmentEvalHelper(onsets, line_time):
     return resample
 
 
-def run_eval_segment(method='hsmm'):
+def run_eval_segment(method='hsmm', param_str='', test_val='test'):
+    """segment level evaluation"""
     if method == 'hsmm':
-        eval_results_path = eval_results_path_hsmm
+        eval_results_path = eval_results_path_hsmm+param_str
         eval_filename = cnn_file_name
     else:
-        eval_results_path = eval_results_path_joint
+        eval_results_path = eval_results_path_joint+param_str
         eval_filename = cnnModel_name
 
-    primarySchool_test_recordings, _, _ = getTestTrainRecordingsJoint()
+    primarySchool_val_recordings, primarySchool_test_recordings, _, _, _, _ = get_train_test_recordings_joint()
+
+    if test_val == 'val':
+        recordings = primarySchool_val_recordings
+    elif test_val == 'test':
+        recordings = primarySchool_test_recordings
+    else:
+        recordings = primarySchool_test_recordings + primarySchool_val_recordings
 
     sumSampleCorrect_syllable, sumSampleCorrect_phoneme, \
     sumSample_syllable, sumSample_phoneme = 0,0,0,0
-    for artist, rn in primarySchool_test_recordings:
+
+    for artist, rn in recordings:
         results_path = os.path.join(eval_results_path, artist)
-        result_files = getRecordings(results_path)
+        result_files = get_recordings(results_path)
 
         for rf in result_files:
             result_filename = os.path.join(results_path, rf+'.pkl')
@@ -188,18 +195,15 @@ def run_eval_segment(method='hsmm'):
             phoneme_gt_onsets, phoneme_detected_onsets, line_time \
                                         = pickle.load(open(result_filename, 'r'))
 
-            syllable_gt_onsets_resample = segmentEvalHelper(syllable_gt_onsets, line_time)
-            syllable_detected_onsets_resample = segmentEvalHelper(syllable_detected_onsets, line_time)
-            phoneme_gt_onsets_resample = segmentEvalHelper(phoneme_gt_onsets, line_time)
-            phoneme_detected_onsets_resample = segmentEvalHelper(phoneme_detected_onsets, line_time)
+            syllable_gt_onsets_resample = segment_eval_helper(syllable_gt_onsets, line_time)
+            syllable_detected_onsets_resample = segment_eval_helper(syllable_detected_onsets, line_time)
+            phoneme_gt_onsets_resample = segment_eval_helper(phoneme_gt_onsets, line_time)
+            phoneme_detected_onsets_resample = segment_eval_helper(phoneme_detected_onsets, line_time)
 
-            # print(phoneme_gt_onsets)
-            # print(phoneme_gt_onsets_resample)
-            # print(phoneme_detected_onsets)
-            # print(phoneme_detected_onsets_resample)
-
-            sample_correct_syllable, sample_syllable = segmentEval(syllable_gt_onsets_resample, syllable_detected_onsets_resample)
-            sample_correct_phoneme, sample_phoneme = segmentEval(phoneme_gt_onsets_resample, phoneme_detected_onsets_resample)
+            sample_correct_syllable, sample_syllable = \
+                segmentEval(syllable_gt_onsets_resample, syllable_detected_onsets_resample)
+            sample_correct_phoneme, sample_phoneme = \
+                segmentEval(phoneme_gt_onsets_resample, phoneme_detected_onsets_resample)
 
             sumSampleCorrect_syllable += sample_correct_syllable
             sumSampleCorrect_phoneme += sample_correct_phoneme
@@ -209,17 +213,22 @@ def run_eval_segment(method='hsmm'):
     acc_syllable = sumSampleCorrect_syllable/float(sumSample_syllable)
     acc_phoneme = sumSampleCorrect_phoneme/float(sumSample_phoneme)
 
-    current_path = os.path.dirname(os.path.abspath(__file__))
+    acc_syllable *= 100
+    acc_phoneme *= 100
 
-    with open(os.path.join(current_path, '../'+method, eval_filename+'_syllable_segment'+'.txt'), 'w') as f:
-        f.write(method)
-        f.write('\n')
-        f.write(str(acc_syllable))
+    if test_val != 'val':
+        # write the results to txt only in test mode
+        current_path = os.path.dirname(os.path.abspath(__file__))
 
-    with open(os.path.join(current_path, '../'+method, eval_filename+'_phoneme_segment'+'.txt'), 'w') as f:
-        f.write(method)
-        f.write('\n')
-        f.write(str(acc_phoneme))
+        with open(os.path.join(current_path, '../'+method, eval_filename
+                +'_syllable_segment'+'_'+test_val+param_str+'.txt'), 'w') as f:
+            f.write(str(acc_syllable))
+
+        with open(os.path.join(current_path, '../'+method, eval_filename
+                +'_phoneme_segment'+'_'+test_val+param_str+'.txt'), 'w') as f:
+            f.write(str(acc_phoneme))
+
+    return acc_syllable, acc_phoneme
 
 if __name__ == '__main__':
     run_eval_onset('hsmm')

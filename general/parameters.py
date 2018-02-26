@@ -40,3 +40,10 @@ varin = {}
 # parameters of viterbi
 varin['delta_mode'] = 'proportion'
 varin['delta']      = 0.35
+
+# parameters of the penalized viterbi
+# varin['penalized_alpha'] = 1.0
+# varin['penalized_beta'] = 1.0
+
+# parameters of posterior normalization
+varin['posterior_norm'] = 1.0
