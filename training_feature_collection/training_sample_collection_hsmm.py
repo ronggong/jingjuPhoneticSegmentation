@@ -1,26 +1,40 @@
-import numpy as np
-from sklearn import preprocessing
+"""
+Run this script to extract features for training hsmm model,
+You need to set up all the paths in filePathHsmm.py
+"""
 
+import h5py
+import cPickle
+import gzip
+import pickle
+from sklearn import preprocessing
+import numpy as np
+
+from filePathHsmm import *
+from parameters import *
 from audio_preprocessing import feature_reshape
 from audio_preprocessing import get_log_mel_madmom
-from general.filePathHsmm import *
-from general.parameters import *
-from general.phonemeMap import dic_pho_map, dic_pho_label
-from general.textgridParser import syllableTextgridExtraction
+from phonemeMap import dic_pho_map, dic_pho_label
+from textgridParser import syllableTextgridExtraction
+
+from trainTestSeparation import get_train_test_recordings_joint
 
 
-def dumpFeaturePho(wav_path,
-                   textgrid_path,
-                   recordings,
-                   syllableTierName,
-                   phonemeTierName):
-    '''
-    dump the MFCC for each phoneme
+def dump_feature_phn(wav_path,
+                     textgrid_path,
+                     recordings,
+                     syllableTierName,
+                     phonemeTierName):
+    """
+    Dump feature for each phoneme
+    :param wav_path:
+    :param textgrid_path:
     :param recordings:
+    :param syllableTierName:
+    :param phonemeTierName:
     :return:
-    '''
+    """
 
-    ##-- dictionary feature
     dic_pho_feature = {}
 
     for _,pho in enumerate(set(dic_pho_map.values())):
@@ -36,7 +50,7 @@ def dumpFeaturePho(wav_path,
         # audio
         wav_full_filename   = join(wav_path,artist_path,recording+'.wav')
 
-        mfcc = get_log_mel_madmom(wav_full_filename, fs, hopsize_t, channel=1)
+        log_mel = get_log_mel_madmom(wav_full_filename, fs, hopsize_t, channel=1)
 
         for ii,pho in enumerate(nestedPhonemeLists):
             print 'calculating ', recording, ' and phoneme ', str(ii), ' of ', str(len(nestedPhonemeLists))
@@ -52,16 +66,17 @@ def dumpFeaturePho(wav_path,
                 sf = int(round(p[0] * fs / float(hopsize))) # starting frame
                 ef = int(round(p[1] * fs / float(hopsize))) # ending frame
 
-                mfcc_p = mfcc[sf:ef,:]  # phoneme syllable
+                log_mel_phn = log_mel[sf:ef,:]  # phoneme syllable
 
                 if not len(dic_pho_feature[key]):
-                    dic_pho_feature[key] = mfcc_p
+                    dic_pho_feature[key] = log_mel_phn
                 else:
-                    dic_pho_feature[key] = np.vstack((dic_pho_feature[key],mfcc_p))
+                    dic_pho_feature[key] = np.vstack((dic_pho_feature[key],log_mel_phn))
 
     return dic_pho_feature
 
-def featureAggregator(dic_pho_feature_train):
+
+def feature_aggregator(dic_pho_feature_train):
     """
     aggregate feature dictionary into numpy feature, label lists,
     reshape the feature
@@ -88,44 +103,37 @@ def featureAggregator(dic_pho_feature_train):
 
     return feature_all, label_all, scaler
 
-if __name__ == '__main__':
 
-    from general.trainTestSeparation import get_train_test_recordings_joint
-    import h5py
-    import cPickle
-    import gzip
-    import pickle
-
+def batch_dump():
     _, testPrimarySchool, trainNacta2017, trainNacta, trainPrimarySchool, trainSepa = get_train_test_recordings_joint()
 
-    dic_pho_feature_nacta2017 = dumpFeaturePho(wav_path=nacta2017_wav_path,
-                                               textgrid_path=nacta2017_textgrid_path,
-                                               recordings=trainNacta2017,
-                                               syllableTierName='line',
-                                               phonemeTierName='details')
+    dic_pho_feature_nacta2017 = dump_feature_phn(wav_path=nacta2017_wav_path,
+                                                 textgrid_path=nacta2017_textgrid_path,
+                                                 recordings=trainNacta2017,
+                                                 syllableTierName='line',
+                                                 phonemeTierName='details')
 
-    dic_pho_feature_nacta = dumpFeaturePho(wav_path=nacta_wav_path,
-                                               textgrid_path=nacta_textgrid_path,
-                                               recordings=trainNacta,
-                                               syllableTierName='line',
-                                               phonemeTierName='details')
+    dic_pho_feature_nacta = dump_feature_phn(wav_path=nacta_wav_path,
+                                             textgrid_path=nacta_textgrid_path,
+                                             recordings=trainNacta,
+                                             syllableTierName='line',
+                                             phonemeTierName='details')
 
-    dic_pho_feature_primarySchool = dumpFeaturePho(wav_path=primarySchool_wav_path,
-                                                   textgrid_path=primarySchool_textgrid_path,
-                                                   recordings=trainPrimarySchool,
-                                                   syllableTierName='line',
-                                                   phonemeTierName='details')
+    dic_pho_feature_primarySchool = dump_feature_phn(wav_path=primarySchool_wav_path,
+                                                     textgrid_path=primarySchool_textgrid_path,
+                                                     recordings=trainPrimarySchool,
+                                                     syllableTierName='line',
+                                                     phonemeTierName='details')
 
-    dic_pho_feature_sepa = dumpFeaturePho(wav_path=nacta_wav_path,
-                                           textgrid_path=nacta_textgrid_path,
-                                           recordings=trainSepa,
-                                           syllableTierName='line',
-                                           phonemeTierName='details')
+    dic_pho_feature_sepa = dump_feature_phn(wav_path=nacta_wav_path,
+                                            textgrid_path=nacta_textgrid_path,
+                                            recordings=trainSepa,
+                                            syllableTierName='line',
+                                            phonemeTierName='details')
 
     # fuse two dictionaries
     list_key = list(set(dic_pho_feature_nacta.keys() + dic_pho_feature_nacta2017.keys() +
                         dic_pho_feature_primarySchool.keys() + dic_pho_feature_sepa.keys()))
-    print(list_key)
 
     dic_pho_feature_all = {}
     for key in list_key:
@@ -144,16 +152,7 @@ if __name__ == '__main__':
         dic_pho_feature_all[key] = np.vstack((dic_pho_feature_nacta[key], dic_pho_feature_nacta2017[key],
                                               dic_pho_feature_primarySchool[key], dic_pho_feature_sepa[key]))
 
-        #         if len(dic_pho_feature_nacta2017[key]) and len(dic_pho_feature_nacta[key]):
-        # elif len(dic_pho_feature_nacta2017[key]):
-        #     dic_pho_feature_all[key] = dic_pho_feature_nacta2017[key]
-        # elif len(dic_pho_feature_nacta[key]):
-        #     dic_pho_feature_all[key] = dic_pho_feature_nacta[key]
-
-    feature_all, label_all, scaler = featureAggregator(dic_pho_feature_all)
-
-    print(feature_all.shape)
-    print(label_all.shape)
+    feature_all, label_all, scaler = feature_aggregator(dic_pho_feature_all)
 
     # save feature label scaler
     filename_feature_all = join(data_am_path, 'feature_hsmm_am.h5')
@@ -168,3 +167,7 @@ if __name__ == '__main__':
 
     pickle.dump(scaler,
                 open(join(data_am_path, 'scaler_hsmm_am.pkl'), 'wb'))
+
+
+if __name__ == '__main__':
+    batch_dump()

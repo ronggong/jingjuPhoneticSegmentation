@@ -1,3 +1,7 @@
+"""
+Run this script to extract features for training joint model,
+You need to set up all the paths in filePathJoint.py
+"""
 import cPickle
 import gzip
 import os
@@ -7,19 +11,20 @@ import h5py
 import numpy as np
 from sklearn import preprocessing
 
+from filePathJoint import *
+from parameters import *
 from audio_preprocessing import feature_reshape
 from audio_preprocessing import get_log_mel_madmom
-from general.filePathJoint import *
-from general.parameters import *
-from general.textgridParser import textGrid2WordList, wordListsParseByLines
-from general.trainTestSeparation import get_train_test_recordings_joint
-from general.trainTestSeparation import get_train_test_recordings_joint_subset
+from textgridParser import textGrid2WordList, wordListsParseByLines
+from trainTestSeparation import get_train_test_recordings_joint
+from trainTestSeparation import get_train_test_recordings_joint_subset
 
 
-def removeOutOfRange(frames, frame_start, frame_end):
+def remove_out_of_range(frames, frame_start, frame_end):
     return frames[np.all([frames <= frame_end, frames >= frame_start], axis=0)]
 
-def simpleSampleWeighting(mfcc, frames_onset_s_p, frames_onset_p, frame_start, frame_end):
+
+def simple_sample_weighting(mfcc, frames_onset_s_p, frames_onset_p, frame_start, frame_end):
     """
     simple weighing strategy used in Schluter's paper
     :param mfcc:
@@ -30,11 +35,10 @@ def simpleSampleWeighting(mfcc, frames_onset_s_p, frames_onset_p, frame_start, f
     """
 
     frames_onset_s_p25 = np.hstack((frames_onset_s_p - 1, frames_onset_s_p + 1))
-    frames_onset_s_p25 = removeOutOfRange(frames_onset_s_p25, frame_start, frame_end)
+    frames_onset_s_p25 = remove_out_of_range(frames_onset_s_p25, frame_start, frame_end)
 
     frames_onset_p25 = np.hstack((frames_onset_p - 1, frames_onset_p + 1))
-    frames_onset_p25 = removeOutOfRange(frames_onset_p25, frame_start, frame_end)
-    # print(frames_onset_p75, frames_onset_p50, frames_onset_p25)
+    frames_onset_p25 = remove_out_of_range(frames_onset_p25, frame_start, frame_end)
 
     # mfcc positive
     mfcc_s_p100 = mfcc[frames_onset_s_p, :]
@@ -48,7 +52,6 @@ def simpleSampleWeighting(mfcc, frames_onset_s_p, frames_onset_p, frame_start, f
                                                       frames_onset_s_p25,
                                                       frames_onset_p,
                                                       frames_onset_p25)))
-    # print(frames_n100.shape, frames_all.shape)
     mfcc_n100 = mfcc[frames_n100, :]
 
     mfcc_s_p = np.concatenate((mfcc_s_p100, mfcc_s_p25), axis=0)
@@ -65,17 +68,17 @@ def simpleSampleWeighting(mfcc, frames_onset_s_p, frames_onset_p, frame_start, f
     mfcc_n = mfcc_n100
     sample_weights_n = np.ones((mfcc_n100.shape[0],))
 
-    return mfcc_s_p, mfcc_p, mfcc_n, sample_weights_s_p, sample_weights_p_syllable, sample_weights_p_phoneme, sample_weights_n
+    return mfcc_s_p, mfcc_p, mfcc_n, sample_weights_s_p, \
+           sample_weights_p_syllable, sample_weights_p_phoneme, sample_weights_n
 
 
-def featureLabelOnsetH5py(filename_mfcc_s_p, filename_mfcc_p, filename_mfcc_n, scaling=True):
-    '''
+def feature_label_onset_h5py(filename_mfcc_s_p, filename_mfcc_p, filename_mfcc_n, scaling=True):
+    """
     organize the training feature and label
     :param
     :return:
-    '''
+    """
 
-    # feature_all = np.concatenate((mfcc_p, mfcc_n), axis=0)
     f_mfcc_s_p = h5py.File(filename_mfcc_s_p, 'a')
     f_mfcc_p = h5py.File(filename_mfcc_p, 'r')
     f_mfcc_n = h5py.File(filename_mfcc_n, 'r')
@@ -86,8 +89,8 @@ def featureLabelOnsetH5py(filename_mfcc_s_p, filename_mfcc_p, filename_mfcc_n, s
     dim_1 = f_mfcc_p['mfcc_p'].shape[1]
 
     label_s_p = [1] * dim_s_p_0
-    label_p_syllable = [0] * dim_p_0 # phoneme onset label for syllable detection
-    label_p_phoneme = [1] * dim_p_0 # phoneme onset label for phoneme detection
+    label_p_syllable = [0] * dim_p_0  # phoneme onset label for syllable detection
+    label_p_phoneme = [1] * dim_p_0  # phoneme onset label for phoneme detection
     label_n = [0] * dim_n_0
 
     label_all_syllable = label_s_p + label_p_syllable + label_n
@@ -121,13 +124,12 @@ def featureLabelOnsetH5py(filename_mfcc_s_p, filename_mfcc_p, filename_mfcc_n, s
     return feature_all, label_all_syllable, label_all_phoneme, scaler
 
 
-def dumpFeatureOnsetHelper(wav_path,
-                           textgrid_path,
-                           artist_name,
-                           recording_name):
+def dump_feature_onset_helper(wav_path,
+                              textgrid_path,
+                              artist_name,
+                              recording_name):
 
     groundtruth_textgrid_file = os.path.join(textgrid_path, artist_name, recording_name + '.TextGrid')
-    print(groundtruth_textgrid_file)
     wav_file = os.path.join(wav_path, artist_name, recording_name + '.wav')
 
     lineList = textGrid2WordList(groundtruth_textgrid_file, whichTier='line')
@@ -139,13 +141,12 @@ def dumpFeatureOnsetHelper(wav_path,
     nestedPhonemeLists, _, _ = wordListsParseByLines(lineList, phonemeList)
 
     # load audio
-    fs = 44100
     mfcc = get_log_mel_madmom(wav_file, fs, hopsize_t, channel=1)
 
     return nestedUtteranceLists, nestedPhonemeLists, mfcc, phonemeList
 
 
-def getFrameOnset(u_list):
+def get_frame_onset(u_list):
 
     times_onset = [u[0] for u in u_list[1]]
 
@@ -159,14 +160,15 @@ def getFrameOnset(u_list):
     return frames_onset, frame_start, frame_end
 
 
-
-def dumpFeatureOnset(wav_path,
-                     textgrid_path,
-                     recordings):
-    '''
+def dump_feature_onset(wav_path,
+                       textgrid_path,
+                       recordings):
+    """
+    :param wav_path:
+    :param textgrid_path:
     :param recordings:
     :return:
-    '''
+    """
 
     # p: position, n: negative, 75: 0.75 sample_weight
     mfcc_s_p_all = []
@@ -179,10 +181,8 @@ def dumpFeatureOnset(wav_path,
 
     for artist_name, recording_name in recordings:
 
-        nestedUtteranceLists, nestedPhonemeLists, mfcc, phonemeList = dumpFeatureOnsetHelper(wav_path,
-                                                                                             textgrid_path,
-                                                                                             artist_name,
-                                                                                             recording_name)
+        nestedUtteranceLists, nestedPhonemeLists, mfcc, phonemeList = \
+            dump_feature_onset_helper(wav_path, textgrid_path, artist_name, recording_name)
 
         for ii_line, line in enumerate(nestedUtteranceLists):
             list_syllable = nestedUtteranceLists[ii_line]
@@ -192,15 +192,17 @@ def dumpFeatureOnset(wav_path,
             if not len(list_syllable[1]):
                 continue
 
-            onsets_syllable, frame_start_line_syllable, frame_end_line_syllable = getFrameOnset(list_syllable)
-            onsets_phoneme, frame_start_line_phoneme, frame_end_line_phoneme = getFrameOnset(list_phoneme)
+            onsets_syllable, frame_start_line_syllable, frame_end_line_syllable = get_frame_onset(list_syllable)
+            onsets_phoneme, frame_start_line_phoneme, frame_end_line_phoneme = get_frame_onset(list_phoneme)
 
-            if not set(onsets_syllable).issubset(onsets_phoneme) or frame_start_line_syllable != frame_start_line_phoneme \
-                or frame_end_line_syllable != frame_end_line_phoneme:
+            if not set(onsets_syllable).issubset(onsets_phoneme) or \
+               frame_start_line_syllable != frame_start_line_phoneme or\
+               frame_end_line_syllable != frame_end_line_phoneme:
                 raise
 
             frames_onset_s_p = onsets_syllable # simultaneously syllable and phoneme onsets
-            frames_onset_p = np.array([o for o in onsets_phoneme if o not in onsets_syllable], dtype=int) # only phoneme onsets
+            # only phoneme onsets
+            frames_onset_p = np.array([o for o in onsets_phoneme if o not in onsets_syllable], dtype=int)
 
             mfcc_s_p, \
             mfcc_p, \
@@ -209,7 +211,8 @@ def dumpFeatureOnset(wav_path,
             sample_weights_p_syllable, \
             sample_weights_p_phoneme, \
             sample_weights_n = \
-                simpleSampleWeighting(mfcc, frames_onset_s_p, frames_onset_p, frame_start_line_syllable, frame_end_line_syllable)
+                simple_sample_weighting(mfcc, frames_onset_s_p, frames_onset_p,
+                                        frame_start_line_syllable, frame_end_line_syllable)
 
             mfcc_s_p_all.append(mfcc_s_p)
             mfcc_p_all.append(mfcc_p)
@@ -230,13 +233,13 @@ def dumpFeatureOnset(wav_path,
            np.concatenate(sample_weights_n_all)
 
 
-def dumpFeatureBatchOnset():
+def dump_feature_batch_onset_subset():
     """
-    dump features for all the dataset for onset detection
+    dump features for onset detection a subset
     :return:
     """
 
-    valPrimarySchool, testPrimarySchool, trainNacta2017, trainNacta, trainPrimarySchool, _ = get_train_test_recordings_joint()
+    trainNacta2017, trainNacta = get_train_test_recordings_joint_subset()
 
     nacta_data = trainNacta
     nacta_data_2017 = trainNacta2017
@@ -249,9 +252,9 @@ def dumpFeatureBatchOnset():
     sample_weights_p_syllable_nacta2017, \
     sample_weights_p_phoneme_nacta2017, \
     sample_weights_n_nacta2017 = \
-        dumpFeatureOnset(wav_path=nacta2017_wav_path,
-                   textgrid_path=nacta2017_textgrid_path,
-                   recordings=nacta_data_2017)
+        dump_feature_onset(wav_path=nacta2017_wav_path,
+                           textgrid_path=nacta2017_textgrid_path,
+                           recordings=nacta_data_2017)
 
     mfcc_s_p_nacta, \
     mfcc_p_nacta, \
@@ -260,31 +263,20 @@ def dumpFeatureBatchOnset():
     sample_weights_p_syllable_nacta, \
     sample_weights_p_phoneme_nacta, \
     sample_weights_n_nacta =    \
-        dumpFeatureOnset(wav_path=nacta_wav_path,
-                     textgrid_path=nacta_textgrid_path,
-                     recordings=nacta_data)
-
-    mfcc_s_p_primary, \
-    mfcc_p_primary, \
-    mfcc_n_primary, \
-    sample_weights_s_p_primary, \
-    sample_weights_p_syllable_primary, \
-    sample_weights_p_phoneme_primary, \
-    sample_weights_n_primary = \
-        dumpFeatureOnset(wav_path=primarySchool_wav_path,
-                         textgrid_path=primarySchool_textgrid_path,
-                         recordings=trainPrimarySchool)
+        dump_feature_onset(wav_path=nacta_wav_path,
+                           textgrid_path=nacta_textgrid_path,
+                           recordings=nacta_data)
 
     print('finished feature extraction.')
 
-    mfcc_s_p = np.concatenate((mfcc_s_p_nacta2017, mfcc_s_p_nacta, mfcc_s_p_primary))
-    mfcc_p = np.concatenate((mfcc_p_nacta2017, mfcc_p_nacta, mfcc_p_primary))
-    mfcc_n = np.concatenate((mfcc_n_nacta2017, mfcc_n_nacta, mfcc_n_primary))
+    mfcc_s_p = np.concatenate((mfcc_s_p_nacta2017, mfcc_s_p_nacta))
+    mfcc_p = np.concatenate((mfcc_p_nacta2017, mfcc_p_nacta))
+    mfcc_n = np.concatenate((mfcc_n_nacta2017, mfcc_n_nacta))
 
-    sample_weights_s_p = np.concatenate((sample_weights_s_p_nacta2017, sample_weights_s_p_nacta, sample_weights_s_p_primary))
-    sample_weights_p_syllable = np.concatenate((sample_weights_p_syllable_nacta2017, sample_weights_p_syllable_nacta, sample_weights_p_syllable_primary))
-    sample_weights_p_phoneme = np.concatenate((sample_weights_p_phoneme_nacta2017, sample_weights_p_phoneme_nacta, sample_weights_p_phoneme_primary))
-    sample_weights_n = np.concatenate((sample_weights_n_nacta2017, sample_weights_n_nacta, sample_weights_n_primary))
+    sample_weights_s_p = np.concatenate((sample_weights_s_p_nacta2017, sample_weights_s_p_nacta))
+    sample_weights_p_syllable = np.concatenate((sample_weights_p_syllable_nacta2017, sample_weights_p_syllable_nacta))
+    sample_weights_p_phoneme = np.concatenate((sample_weights_p_phoneme_nacta2017, sample_weights_p_phoneme_nacta))
+    sample_weights_n = np.concatenate((sample_weights_n_nacta2017, sample_weights_n_nacta))
 
     sample_weights_syllable = np.concatenate((sample_weights_s_p, sample_weights_p_syllable, sample_weights_n))
     sample_weights_phoneme = np.concatenate((sample_weights_s_p, sample_weights_p_phoneme, sample_weights_n))
@@ -309,7 +301,137 @@ def dumpFeatureBatchOnset():
     del mfcc_n
 
     feature_all, label_all_syllable, label_all_phoneme, scaler = \
-        featureLabelOnsetH5py(filename_mfcc_s_p, filename_mfcc_p, filename_mfcc_n, scaling=scaling)
+        feature_label_onset_h5py(filename_mfcc_s_p, filename_mfcc_p, filename_mfcc_n, scaling=scaling)
+
+    os.remove(filename_mfcc_s_p)
+    os.remove(filename_mfcc_p)
+    os.remove(filename_mfcc_n)
+
+    nlen = 7
+    feature_all = feature_reshape(feature_all, nlen=nlen)
+
+    print('feature shape:', feature_all.shape)
+
+    filename_feature_all = join(training_data_path, 'feature_all_joint_subset.h5')
+    h5f = h5py.File(filename_feature_all, 'w')
+    h5f.create_dataset('feature_all', data=feature_all)
+    h5f.close()
+
+    print('finished feature concatenation.')
+
+    cPickle.dump(label_all_syllable,
+                 gzip.open(
+                     './training_data/labels_joint_syllable_subset.pickle.gz',
+                     'wb'), cPickle.HIGHEST_PROTOCOL)
+
+    cPickle.dump(label_all_phoneme,
+                 gzip.open(
+                     './training_data/labels_joint_phoneme_subset.pickle.gz',
+                     'wb'), cPickle.HIGHEST_PROTOCOL)
+
+    cPickle.dump(sample_weights_syllable,
+                 gzip.open('./training_data/sample_weights_joint_syllable_subset.pickle.gz',
+                           'wb'), cPickle.HIGHEST_PROTOCOL)
+
+    cPickle.dump(sample_weights_phoneme,
+                 gzip.open('./training_data/sample_weights_joint_phoneme_subset.pickle.gz',
+                           'wb'), cPickle.HIGHEST_PROTOCOL)
+
+    print(feature_all.shape)
+    print(label_all_syllable.shape, label_all_phoneme.shape)
+    print(sample_weights_syllable.shape, sample_weights_phoneme.shape)
+
+    pickle.dump(scaler,
+                open('./cnnModels/scaler_joint_subset.pkl', 'wb'))
+
+
+def dump_Feature_batch_onset():
+    """
+    dump features for all the dataset for onset detection
+    :return:
+    """
+
+    valPrimarySchool, testPrimarySchool, trainNacta2017, trainNacta, trainPrimarySchool, _ \
+        = get_train_test_recordings_joint()
+
+    nacta_data = trainNacta
+    nacta_data_2017 = trainNacta2017
+    scaling = True
+
+    mfcc_s_p_nacta2017, \
+    mfcc_p_nacta2017,\
+    mfcc_n_nacta2017, \
+    sample_weights_s_p_nacta2017, \
+    sample_weights_p_syllable_nacta2017, \
+    sample_weights_p_phoneme_nacta2017, \
+    sample_weights_n_nacta2017 = \
+        dump_feature_onset(wav_path=nacta2017_wav_path,
+                           textgrid_path=nacta2017_textgrid_path,
+                           recordings=nacta_data_2017)
+
+    mfcc_s_p_nacta, \
+    mfcc_p_nacta, \
+    mfcc_n_nacta, \
+    sample_weights_s_p_nacta, \
+    sample_weights_p_syllable_nacta, \
+    sample_weights_p_phoneme_nacta, \
+    sample_weights_n_nacta =    \
+        dump_feature_onset(wav_path=nacta_wav_path,
+                           textgrid_path=nacta_textgrid_path,
+                           recordings=nacta_data)
+
+    mfcc_s_p_primary, \
+    mfcc_p_primary, \
+    mfcc_n_primary, \
+    sample_weights_s_p_primary, \
+    sample_weights_p_syllable_primary, \
+    sample_weights_p_phoneme_primary, \
+    sample_weights_n_primary = \
+        dump_feature_onset(wav_path=primarySchool_wav_path,
+                           textgrid_path=primarySchool_textgrid_path,
+                           recordings=trainPrimarySchool)
+
+    print('finished feature extraction.')
+
+    mfcc_s_p = np.concatenate((mfcc_s_p_nacta2017, mfcc_s_p_nacta, mfcc_s_p_primary))
+    mfcc_p = np.concatenate((mfcc_p_nacta2017, mfcc_p_nacta, mfcc_p_primary))
+    mfcc_n = np.concatenate((mfcc_n_nacta2017, mfcc_n_nacta, mfcc_n_primary))
+
+    sample_weights_s_p = \
+        np.concatenate((sample_weights_s_p_nacta2017, sample_weights_s_p_nacta, sample_weights_s_p_primary))
+    sample_weights_p_syllable = \
+        np.concatenate((sample_weights_p_syllable_nacta2017,
+                        sample_weights_p_syllable_nacta, sample_weights_p_syllable_primary))
+    sample_weights_p_phoneme = \
+        np.concatenate((sample_weights_p_phoneme_nacta2017,
+                        sample_weights_p_phoneme_nacta, sample_weights_p_phoneme_primary))
+    sample_weights_n = \
+        np.concatenate((sample_weights_n_nacta2017, sample_weights_n_nacta, sample_weights_n_primary))
+
+    sample_weights_syllable = np.concatenate((sample_weights_s_p, sample_weights_p_syllable, sample_weights_n))
+    sample_weights_phoneme = np.concatenate((sample_weights_s_p, sample_weights_p_phoneme, sample_weights_n))
+
+    filename_mfcc_s_p = join(training_data_path, 'mfcc_s_p_joint.h5')
+    h5f = h5py.File(filename_mfcc_s_p, 'w')
+    h5f.create_dataset('mfcc_s_p', data=mfcc_s_p)
+    h5f.close()
+
+    filename_mfcc_p = join(training_data_path, 'mfcc_p_joint.h5')
+    h5f = h5py.File(filename_mfcc_p, 'w')
+    h5f.create_dataset('mfcc_p', data=mfcc_p)
+    h5f.close()
+
+    filename_mfcc_n = join(training_data_path, 'mfcc_n_joint.h5')
+    h5f = h5py.File(filename_mfcc_n, 'w')
+    h5f.create_dataset('mfcc_n', data=mfcc_n)
+    h5f.close()
+
+    del mfcc_s_p
+    del mfcc_p
+    del mfcc_n
+
+    feature_all, label_all_syllable, label_all_phoneme, scaler = \
+        feature_label_onset_h5py(filename_mfcc_s_p, filename_mfcc_p, filename_mfcc_n, scaling=scaling)
 
     os.remove(filename_mfcc_s_p)
     os.remove(filename_mfcc_p)
@@ -353,116 +475,5 @@ def dumpFeatureBatchOnset():
                 open('./cnnModels/scaler_joint.pkl', 'wb'))
 
 
-def dumpFeatureBatchOnsetSubset():
-    """
-    dump features for all the dataset for onset detection
-    :return:
-    """
-
-    trainNacta2017, trainNacta = get_train_test_recordings_joint_subset()
-
-    nacta_data = trainNacta
-    nacta_data_2017 = trainNacta2017
-    scaling = True
-
-    mfcc_s_p_nacta2017, \
-    mfcc_p_nacta2017,\
-    mfcc_n_nacta2017, \
-    sample_weights_s_p_nacta2017, \
-    sample_weights_p_syllable_nacta2017, \
-    sample_weights_p_phoneme_nacta2017, \
-    sample_weights_n_nacta2017 = \
-        dumpFeatureOnset(wav_path=nacta2017_wav_path,
-                   textgrid_path=nacta2017_textgrid_path,
-                   recordings=nacta_data_2017)
-
-    mfcc_s_p_nacta, \
-    mfcc_p_nacta, \
-    mfcc_n_nacta, \
-    sample_weights_s_p_nacta, \
-    sample_weights_p_syllable_nacta, \
-    sample_weights_p_phoneme_nacta, \
-    sample_weights_n_nacta =    \
-        dumpFeatureOnset(wav_path=nacta_wav_path,
-                     textgrid_path=nacta_textgrid_path,
-                     recordings=nacta_data)
-
-    print('finished feature extraction.')
-
-    mfcc_s_p = np.concatenate((mfcc_s_p_nacta2017, mfcc_s_p_nacta))
-    mfcc_p = np.concatenate((mfcc_p_nacta2017, mfcc_p_nacta))
-    mfcc_n = np.concatenate((mfcc_n_nacta2017, mfcc_n_nacta))
-
-    sample_weights_s_p = np.concatenate((sample_weights_s_p_nacta2017, sample_weights_s_p_nacta))
-    sample_weights_p_syllable = np.concatenate((sample_weights_p_syllable_nacta2017, sample_weights_p_syllable_nacta))
-    sample_weights_p_phoneme = np.concatenate((sample_weights_p_phoneme_nacta2017, sample_weights_p_phoneme_nacta))
-    sample_weights_n = np.concatenate((sample_weights_n_nacta2017, sample_weights_n_nacta))
-
-    sample_weights_syllable = np.concatenate((sample_weights_s_p, sample_weights_p_syllable, sample_weights_n))
-    sample_weights_phoneme = np.concatenate((sample_weights_s_p, sample_weights_p_phoneme, sample_weights_n))
-
-    filename_mfcc_s_p = join(training_data_path, 'mfcc_s_p_joint.h5')
-    h5f = h5py.File(filename_mfcc_s_p, 'w')
-    h5f.create_dataset('mfcc_s_p', data=mfcc_s_p)
-    h5f.close()
-
-    filename_mfcc_p = join(training_data_path, 'mfcc_p_joint.h5')
-    h5f = h5py.File(filename_mfcc_p, 'w')
-    h5f.create_dataset('mfcc_p', data=mfcc_p)
-    h5f.close()
-
-    filename_mfcc_n = join(training_data_path, 'mfcc_n_joint.h5')
-    h5f = h5py.File(filename_mfcc_n, 'w')
-    h5f.create_dataset('mfcc_n', data=mfcc_n)
-    h5f.close()
-
-    del mfcc_s_p
-    del mfcc_p
-    del mfcc_n
-
-    feature_all, label_all_syllable, label_all_phoneme, scaler = \
-        featureLabelOnsetH5py(filename_mfcc_s_p, filename_mfcc_p, filename_mfcc_n, scaling=scaling)
-
-    os.remove(filename_mfcc_s_p)
-    os.remove(filename_mfcc_p)
-    os.remove(filename_mfcc_n)
-
-    nlen = 7
-    feature_all = feature_reshape(feature_all, nlen=nlen)
-
-    print('feature shape:', feature_all.shape)
-
-    filename_feature_all = join(training_data_path, 'feature_all_joint_subset.h5')
-    h5f = h5py.File(filename_feature_all, 'w')
-    h5f.create_dataset('feature_all', data=feature_all)
-    h5f.close()
-
-    print('finished feature concatenation.')
-
-    cPickle.dump(label_all_syllable,
-                 gzip.open(
-                     './training_data/labels_joint_syllable_subset.pickle.gz',
-                     'wb'), cPickle.HIGHEST_PROTOCOL)
-
-    cPickle.dump(label_all_phoneme,
-                 gzip.open(
-                     './training_data/labels_joint_phoneme_subset.pickle.gz',
-                     'wb'), cPickle.HIGHEST_PROTOCOL)
-
-    cPickle.dump(sample_weights_syllable,
-                 gzip.open('./training_data/sample_weights_joint_syllable_subset.pickle.gz',
-                           'wb'), cPickle.HIGHEST_PROTOCOL)
-
-    cPickle.dump(sample_weights_phoneme,
-                 gzip.open('./training_data/sample_weights_joint_phoneme_subset.pickle.gz',
-                           'wb'), cPickle.HIGHEST_PROTOCOL)
-
-    print(feature_all.shape)
-    print(label_all_syllable.shape, label_all_phoneme.shape)
-    print(sample_weights_syllable.shape, sample_weights_phoneme.shape)
-
-    pickle.dump(scaler,
-                open('./cnnModels/scaler_joint_subset.pkl', 'wb'))
-
 if __name__ == '__main__':
-    dumpFeatureBatchOnsetSubset()
+    dump_Feature_batch_onset()
