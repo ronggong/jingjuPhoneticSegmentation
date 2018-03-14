@@ -11,6 +11,7 @@ pyximport.install(reload_support=True,
                   setup_args={'include_dirs': np.get_include()})
 
 import viterbiDecodingPhonemeSeg
+from general.filePathShared import *
 from general.filePathJoint import *
 from general.parameters import *
 from general.trainTestSeparation import get_train_test_recordings_joint
@@ -284,7 +285,25 @@ def onset_function_all_recordings(wav_path,
                                             ii_line,
                                             time_end-time_start)
 
+
             if plot:
+                joint_plot_data = [mfcc_line,
+                                   syllable_gt_onsets_0start,
+                                   phoneme_gt_onsets_0start_without_syllable_onsets,
+                                   obs_syllable,
+                                   boundaries_syllable_start_time,
+                                   obs_phoneme,
+                                   boundaries_phoneme_start_time]
+
+                plot_data_artist_path = join(plot_data_path, cnnModel_name, artist_path)
+                filename_plot_data_joint = fn + '_' + str(ii_line + 1) + '.pkl'
+
+                print('save plot data ... ...')
+                if not exists(plot_data_artist_path):
+                    makedirs(plot_data_artist_path)
+
+                pickle.dump(joint_plot_data, open(join(plot_data_artist_path, filename_plot_data_joint), 'w'))
+
                 figure_plot_joint(mfcc_line,
                                   syllable_gt_onsets_0start,
                                   phoneme_gt_onsets_0start_without_syllable_onsets,
@@ -297,7 +316,7 @@ def onset_function_all_recordings(wav_path,
 
 
 def main():
-    plot = False
+    plot = True
 
     # missing phoneme experiment parameters
     missing_phn = False

@@ -45,8 +45,8 @@ if __name__ == '__main__':
 
     for running_time in range(1, 5):
         # train the final model
-        file_path_model = '/homedtic/rgong/cnnSyllableSeg/out/jan_joint_subset_syllable_val_loss_weighted'+str(running_time)+'.h5'
-        file_path_log = '/homedtic/rgong/cnnSyllableSeg/out/log/jan_joint_subset_syllable_val_loss_weighted'+str(running_time)+'.csv'
+        file_path_model = '/homedtic/rgong/cnnSyllableSeg/out/jan_joint_subset_series'+str(running_time)+'.h5'
+        file_path_log = '/homedtic/rgong/cnnSyllableSeg/out/log/jan_joint_subset_series'+str(running_time)+'.csv'
 
         # file_path_model = '../../temp/jan_joint.h5'
         # file_path_log = '../../temp/jan_joint.csv'

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -J jjssvlw
+#SBATCH -J jjms
 #SBATCH -p high
 #SBATCH -N 1
 #SBATCH --workdir=/homedtic/rgong/cnnSyllableSeg/jingjuPhoneticSegmentation
@@ -11,8 +11,8 @@
 
 # Output/Error Text
 # ----------------
-#SBATCH -o /homedtic/rgong/cnnSyllableSeg/out/jjssvlw.%N.%J.%u.out # STDOUT
-#SBATCH -e /homedtic/rgong/cnnSyllableSeg/out/jjssvlw.%N.%J.%u.err # STDERR
+#SBATCH -o /homedtic/rgong/cnnSyllableSeg/out/jjms.%N.%J.%u.out # STDOUT
+#SBATCH -e /homedtic/rgong/cnnSyllableSeg/out/jjms.%N.%J.%u.err # STDERR
 
 # anaconda environment
 export PATH=/homedtic/rgong/anaconda2/bin:$PATH

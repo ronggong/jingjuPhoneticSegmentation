@@ -148,7 +148,7 @@ def get_train_test_recordings_joint():
 
 def get_train_test_recordings_joint_subset():
     """train_nacta_2017, train_nacta for syllable and phoneme joint estimation and HSMM alignment acoustic model,
-    a subset, for another forgot purpose."""
+    a subset, for ISMIR 2018."""
 
     train_nacta_2017 = [['20170418TianHao', 'lseh-Tan_yang_jia-Hong_yang_dong-nacta']]  # yes pro
 
@@ -175,3 +175,12 @@ def get_train_test_recordings_joint_subset():
                    ]
 
     return train_nacta_2017, train_nacta
+
+
+if __name__ == '__main__':
+    val_primary_school, test_primary_school, train_nacta_2017, train_nacta, train_primary_school, train_sepa = \
+        get_train_test_recordings_joint()
+    recordings_train = train_nacta_2017 + train_nacta + train_primary_school + train_sepa
+    recordings_test = val_primary_school + test_primary_school
+    print('train recordings number:', len(recordings_train))
+    print('test recordings number:', len(recordings_test))

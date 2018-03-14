@@ -4,7 +4,15 @@ used in proposed_method_pipeline.py"""
 import matplotlib
 matplotlib.use('TkAgg')
 
+import matplotlib.style
+import matplotlib as mpl
+mpl.style.use('classic')
+
+from matplotlib import gridspec
+from matplotlib import cm
+
 from parameters import *
+import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -94,7 +102,7 @@ def figure_plot_joint(mfcc_line,
 def figure_plot_hsmm(mfcc_line,
                      syllable_gt_onsets_0start,
                      phoneme_gt_onsets_0start_without_syllable_onsets,
-                     hsmm,
+                     B_map,
                      phoneme_score_labels,
                      path,
                      boundaries_phoneme_start_time,
@@ -122,7 +130,6 @@ def figure_plot_hsmm(mfcc_line,
     ax1.axis('tight')
 
     # plot observation proba matrix
-    B_map = hsmm._getBmap()
     n_states = B_map.shape[0]
     n_frame = B_map.shape[1]
     y = np.arange(n_states + 1)
@@ -174,3 +181,144 @@ def figure_plot_hsmm(mfcc_line,
     plt.xlabel('Time (s)')
 
     plt.show()
+
+
+def plot_data_parser_joint(filename):
+
+    mfcc_line, \
+    syllable_gt_onsets_0start, \
+    phoneme_gt_onsets_0start_without_syllable_onsets, \
+    obs_syllable, \
+    boundaries_syllable_start_time, \
+    obs_phoneme, \
+    boundaries_phoneme_start_time = pickle.load(open(filename, 'r'))
+
+    return mfcc_line, \
+           syllable_gt_onsets_0start, \
+           phoneme_gt_onsets_0start_without_syllable_onsets, \
+           obs_syllable, \
+           boundaries_syllable_start_time, \
+           obs_phoneme, \
+           boundaries_phoneme_start_time
+
+
+def plot_data_parser_hsmm(filename):
+
+    mfcc_line, \
+    syllable_gt_onsets_0start, \
+    phoneme_gt_onsets_0start_without_syllable_onsets, \
+    B_map, \
+    phoneme_score_labels_mapped, \
+    path, \
+    boundaries_syllable_start_time, \
+    boundaries_phoneme_start_time = pickle.load(open(filename, 'r'))
+
+    return mfcc_line, \
+           syllable_gt_onsets_0start, \
+           phoneme_gt_onsets_0start_without_syllable_onsets, \
+           B_map, \
+           phoneme_score_labels_mapped, \
+           path, \
+           boundaries_syllable_start_time, \
+           boundaries_phoneme_start_time
+
+
+def plot_joint_hsmm_interspeech(fn_joint, fn_hsmm, include_hsmm_matrix_labels=False):
+
+    # load joint model plot data
+    mfcc_line, \
+    syllable_gt_onsets_0start, \
+    phoneme_gt_onsets_0start_without_syllable_onsets, \
+    obs_syllable_joint, \
+    boundaries_syllable_start_time_joint, \
+    obs_phoneme_joint, \
+    boundaries_phoneme_start_time_joint = pickle.load(open(fn_joint, 'r'))
+
+    # load hsmm model plot data
+    _, \
+    _, \
+    _, \
+    B_map, \
+    phoneme_score_labels_mapped, \
+    path_hsmm, \
+    boundaries_syllable_start_time_hsmm, \
+    boundaries_phoneme_start_time_hsmm = pickle.load(open(fn_hsmm, 'r'))
+
+
+    linestyle_phoneme_onset = '--'
+
+    fig = plt.figure(figsize=(16, 12))
+    gs = gridspec.GridSpec(4, 1, height_ratios=[1, 1, 1, 3])
+
+    # class weight
+    ax1 = plt.subplot(gs[0])
+    y = np.arange(0, 80)
+    x = np.arange(0, mfcc_line.shape[0]) * hopsize_t
+    plt.pcolormesh(x, y, np.transpose(mfcc_line[:, 80 * 7:80 * 8]))
+    for gso in syllable_gt_onsets_0start:
+        plt.axvline(gso, color='r', linewidth=2)
+    for gpo in phoneme_gt_onsets_0start_without_syllable_onsets:
+        plt.axvline(gpo, color='k', linewidth=2, linestyle=linestyle_phoneme_onset)
+        # for i_gs, gs in enumerate(groundtruth_onset):
+        #     plt.axvline(gs, color='r', linewidth=2)
+        # plt.text(gs, ax1.get_ylim()[1], groundtruth_syllables[i_gs])
+
+    ax1.set_ylabel('log-mel\nbands', fontsize=15)
+    ax1.get_xaxis().set_visible(False)
+    ax1.get_yaxis().set_ticks(np.arange(0, 80, 20))
+    ax1.axis('tight')
+
+    ax2 = plt.subplot(gs[1], sharex=ax1)
+    plt.plot(np.arange(0, len(obs_syllable_joint)) * hopsize_t, obs_syllable_joint)
+    for bsst in boundaries_syllable_start_time_joint:
+        plt.axvline(bsst, color='r', linewidth=2)
+
+    ax2.set_ylabel('Proposed\nsyllable', fontsize=15)
+    ax2.axis('tight')
+
+    ax3 = plt.subplot(gs[2], sharex=ax1)
+    plt.plot(np.arange(0, len(obs_phoneme_joint)) * hopsize_t, obs_phoneme_joint)
+    for bpst in boundaries_phoneme_start_time_joint:
+        plt.axvline(bpst, color='k', linewidth=2, linestyle=linestyle_phoneme_onset)
+    for bsst in boundaries_syllable_start_time_joint:
+        plt.axvline(bsst, color='r', linewidth=2)
+    # for i_ib in range(len(i_boundary)-1):
+    #     plt.axvline(i_boundary[i_ib] * hopsize_t, color='r', linewidth=2)
+    # plt.text(i_boundary[i_ib] * hopsize_t, ax2.get_ylim()[1], syllables[i_line][i_ib])
+    ax3.set_ylabel('Proposed\nphoneme', fontsize=15)
+    ax3.axis('tight')
+    ax3.set_ylim([0, 1.1])
+
+    ax4 = plt.subplot(gs[3], sharex=ax1)
+    for bpst in boundaries_phoneme_start_time_hsmm:
+        ax4.axvline(bpst, color='k', linewidth=2, linestyle=linestyle_phoneme_onset)
+    for bsst in boundaries_syllable_start_time_hsmm:
+        ax4.axvline(bsst, color='r', linewidth=2)
+    ax4.set_ylabel('Baseline', fontsize=15)
+
+    if include_hsmm_matrix_labels:
+        n_states = B_map.shape[0]
+        n_frame = B_map.shape[1]
+        y = np.arange(n_states + 1)
+        x = np.arange(n_frame) * hopsize / float(fs)
+        emission = ax4.pcolormesh(x, y, B_map, cmap=cm.coolwarm)
+        cbar_ax4 = fig.colorbar(emission, orientation="horizontal", pad=0.2)
+        cbar_ax4.ax.set_xlabel('log probabilities')
+
+        ax4.set_yticks(y)
+        ax4.set_yticklabels(phoneme_score_labels_mapped, fontdict={'fontsize': 10})
+        ax4.plot(x, path_hsmm, 'b', linewidth=2)  # plot the decoding path
+    else:
+        ax4.get_yaxis().set_ticks([])
+
+    ax4.axis('tight')
+
+    plt.xlim([-0.01, mfcc_line.shape[0]*hopsize_t])
+    plt.xlabel('Time (s)', fontsize=15)
+    plt.show()
+
+
+if __name__ == '__main__':
+    fn_joint = '/home/gong/Documents/pycharmProjects/jingjuPhoneticSegmentation/plot_data/jan_joint_0/20171211SongRuoXuan/daxp_Qing_zao_qi_lai-Mai_shui-dxjky/student01_1.pkl'
+    fn_hsmm = '/home/gong/Documents/pycharmProjects/jingjuPhoneticSegmentation/plot_data/hsmm/20171211SongRuoXuan/daxp_Qing_zao_qi_lai-Mai_shui-dxjky/student01_1.pkl'
+    plot_joint_hsmm_interspeech(fn_joint, fn_hsmm, include_hsmm_matrix_labels=True)

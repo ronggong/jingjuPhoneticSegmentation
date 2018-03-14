@@ -5,13 +5,15 @@ import numpy as np
 import pyximport
 pyximport.install(reload_support=True,
                   setup_args={'include_dirs': np.get_include()})
-
+import os
+import pickle
 from lyricsRecognizer.LRHSMM import LRHSMM
 from lyricsRecognizer.makeHSMMNet import singleTransMatBuild
 from audio_preprocessing import get_log_mel_madmom
 from audio_preprocessing import feature_reshape
 
 from general.utilFunctions import remove_silence
+from general.filePathShared import *
 from general.filePathHsmm import *
 from general.parameters import *
 from general.utilFunctions import textgrid_syllable_phoneme_parser
@@ -213,10 +215,28 @@ def phoneme_seg_all_recordings(wav_path,
                                             time_end-time_start)
 
             if plot:
+                hsmm_plot_data = [mfcc_line,
+                                  syllable_gt_onsets_0start,
+                                  phoneme_gt_onsets_0start_without_syllable_onsets,
+                                  hsmm._getBmap(),
+                                  phoneme_score_labels_mapped,
+                                  path,
+                                  boundaries_syllable_start_time,
+                                  boundaries_phoneme_start_time]
+
+                plot_data_artist_path = join(plot_data_path, 'hsmm', artist_path)
+                filename_plot_data_hsmm = fn + '_' + str(ii_line + 1) + '.pkl'
+
+                print('save plot data ... ...')
+                if not os.path.exists(plot_data_artist_path):
+                    os.makedirs(plot_data_artist_path)
+
+                pickle.dump(hsmm_plot_data, open(join(plot_data_artist_path, filename_plot_data_hsmm), 'w'))
+
                 figure_plot_hsmm(mfcc_line,
                                  syllable_gt_onsets_0start,
                                  phoneme_gt_onsets_0start_without_syllable_onsets,
-                                 hsmm,
+                                 hsmm._getBmap(),
                                  phoneme_score_labels_mapped,
                                  path,
                                  boundaries_phoneme_start_time,
@@ -233,7 +253,7 @@ def main():
 
     joint_obs_str = '_joint_obs_e6' if use_joint_obs else ''
 
-    plot = False
+    plot = True
 
     debug_mode = False  # in debug mode, you will have the plots of the observation matrix
 
@@ -258,7 +278,7 @@ def main():
                                    textgrid_path=primarySchool_textgrid_path,
                                    scaler=scaler,
                                    scaler_joint=scaler_joint,
-                                   test_recordings=primarySchool_test_recordings,
+                                   test_recordings=primarySchool_val_recordings+primarySchool_test_recordings,
                                    model_keras_cnn_0=model_keras_cnn_0,
                                    model_joint=model_joint,
                                    eval_results_path=eval_results_path+joint_obs_str+'_'+str(ii),

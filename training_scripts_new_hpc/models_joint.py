@@ -62,7 +62,7 @@ def jan_joint(filter_density, dropout, input_shape, batchNorm=False, dense_activ
     return model
 
 
-def jan_joint_deep(filter_density, dropout, input_shape, batchNorm=False, dense_activation='relu', channel=1):
+def jan_joint_deep_base(filter_density, dropout, input_shape, batchNorm=False, dense_activation='relu', channel=1):
     "less deep architecture"
     if channel == 1:
         reshape_dim = (1, input_shape[0], input_shape[1])
@@ -81,12 +81,12 @@ def jan_joint_deep(filter_density, dropout, input_shape, batchNorm=False, dense_
         x = input
 
     x = Conv2D(int(10 * filter_density), (3, 7), padding="valid",
-                       input_shape=reshape_dim,
-                       data_format=channel_order, activation='relu')(x)
+               input_shape=reshape_dim,
+               data_format=channel_order, activation='relu')(x)
     x = MaxPooling2D(pool_size=(3, 1), padding='valid', data_format=channel_order)(x)
 
     x = Conv2D(int(20 * filter_density), (3, 3), padding="valid",
-                       data_format=channel_order, activation='relu')(x)
+               data_format=channel_order, activation='relu')(x)
     x = MaxPooling2D(pool_size=(3, 1), padding='valid', data_format=channel_order)(x)
 
     if dropout:
@@ -94,21 +94,28 @@ def jan_joint_deep(filter_density, dropout, input_shape, batchNorm=False, dense_
 
     # replacement of the dense layer
     x = Conv2D(int(60 * filter_density), (3, 3), padding=padding,
-                       data_format=channel_order, activation='relu')(x)
+               data_format=channel_order, activation='relu')(x)
     x = BatchNormalization(axis=1)(x)
 
     x = Conv2D(int(60 * filter_density), (3, 3), padding=padding,
-                       data_format=channel_order, activation='relu')(x)
+               data_format=channel_order, activation='relu')(x)
     x = BatchNormalization(axis=1)(x)
 
     x = Conv2D(int(60 * filter_density), (3, 3), padding=padding,
-                       data_format=channel_order, activation='relu')(x)
+               data_format=channel_order, activation='relu')(x)
     x = BatchNormalization(axis=1)(x)
 
     x = Flatten()(x)
 
     if dropout:
         x = Dropout(dropout)(x)
+
+    return x, input
+
+
+def jan_joint_deep_parallel(filter_density, dropout, input_shape, batchNorm=False, dense_activation='relu', channel=1):
+
+    x, input = jan_joint_deep_base(filter_density, dropout, input_shape, batchNorm, dense_activation, channel)
 
     syllable_out = Dense(1, activation='sigmoid', name='syllable_output')(x)
     phoneme_out = Dense(1, activation='sigmoid', name='phoneme_output')(x)
@@ -123,6 +130,24 @@ def jan_joint_deep(filter_density, dropout, input_shape, batchNorm=False, dense_
                   optimizer=optimizer)
 
     # print(model.summary())
+
+    return model
+
+
+def jan_joint_deep_series(filter_density, dropout, input_shape, batchNorm=False, dense_activation='relu', channel=1):
+
+    x, input = jan_joint_deep_base(filter_density, dropout, input_shape, batchNorm, dense_activation, channel)
+
+    phoneme_out = Dense(1, activation='sigmoid', name='phoneme_output')(x)
+
+    syllable_out = Dense(1, activation='sigmoid', name='syllable_output')(phoneme_out)
+
+    model = Model(inputs=input, outputs=[syllable_out, phoneme_out])
+
+    optimizer = Adam()
+
+    model.compile(loss='binary_crossentropy',
+                  optimizer=optimizer)
 
     return model
 
@@ -237,12 +262,19 @@ def train_model_validation(filename_train_validation_set,
     #                     dense_activation='sigmoid',
     #                     channel=channel)
 
-    model_0 = jan_joint_deep(filter_density,
-                             dropout,
-                             input_shape,
-                             batchNorm=False,
-                             dense_activation='sigmoid',
-                             channel=channel)
+    # model_0 = jan_joint_deep_parallel(filter_density,
+    #                                   dropout,
+    #                                   input_shape,
+    #                                   batchNorm=False,
+    #                                   dense_activation='sigmoid',
+    #                                   channel=channel)
+
+    model_0 = jan_joint_deep_series(filter_density,
+                                    dropout,
+                                    input_shape,
+                                    batchNorm=False,
+                                    dense_activation='sigmoid',
+                                    channel=channel)
 
     # print(model_0.summary())
 
