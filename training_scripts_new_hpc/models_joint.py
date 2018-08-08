@@ -224,12 +224,12 @@ def model_train_validation(model_0,
                               channel=channel)
 
     model_0.fit_generator(generator=generator_train,
-                            steps_per_epoch=steps_per_epoch_train,
-                            epochs=500,
-                            validation_data=generator_val,
-                            validation_steps=steps_per_epoch_val,
-                            callbacks=callbacks,
-                            verbose=2)
+                          steps_per_epoch=steps_per_epoch_train,
+                          epochs=500,
+                          validation_data=generator_val,
+                          validation_steps=steps_per_epoch_val,
+                          callbacks=callbacks,
+                          verbose=2)
 
 
 def train_model_validation(filename_train_validation_set,
@@ -237,12 +237,12 @@ def train_model_validation(filename_train_validation_set,
                            filename_labels_phoneme_train_validation_set,
                            filename_sample_weights_syllable,
                            filename_sample_weights_phoneme,
-                            filter_density,
-                            dropout,
-                            input_shape,
-                            file_path_model,
-                            filename_log,
-                            channel=1):
+                           filter_density,
+                           dropout,
+                           input_shape,
+                           file_path_model,
+                           filename_log,
+                           channel=1):
     """
     train model with validation
     """
