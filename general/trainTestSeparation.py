@@ -146,6 +146,26 @@ def get_train_test_recordings_joint():
     return val_primary_school, test_primary_school, train_nacta_2017, train_nacta, train_primary_school, train_sepa
 
 
+def get_test_recordings_extra():
+    """extra test dataset adult students"""
+    test_primary_school = [['20171214SongRuoXuan/daeh-Yang_yu_huan-Tai_zhen_wai_zhuan-nanluo', 'student_01'],
+                           ['20171214SongRuoXuan/daeh-Yang_yu_huan-Tai_zhen_wai_zhuan-nanluo', 'student_02'],
+                           ['20171214SongRuoXuan/daeh-Yang_yu_huan-Tai_zhen_wai_zhuan-nanluo', 'student_03'],
+                           ['20171214SongRuoXuan/daeh-Yang_yu_huan-Tai_zhen_wai_zhuan-nanluo', 'student_04'],
+                           ['20171214SongRuoXuan/daeh-Yang_yu_huan-Tai_zhen_wai_zhuan-nanluo', 'student_05'],
+
+                           ['20171214SongRuoXuan/danbz-Kan_dai_wang-Ba_wang_bie_ji-nanluo', 'student_01'],
+                           ['20171214SongRuoXuan/danbz-Kan_dai_wang-Ba_wang_bie_ji-nanluo', 'student_02'],
+                           ['20171214SongRuoXuan/danbz-Kan_dai_wang-Ba_wang_bie_ji-nanluo', 'student_03'],
+
+                           ['20171214SongRuoXuan/daspd-Hai_dao_bing-Gui_fei_zui_jiu-nanluo', 'student_01'],
+                           ['20171214SongRuoXuan/daspd-Hai_dao_bing-Gui_fei_zui_jiu-nanluo', 'student_02'],
+
+                           ['20171214SongRuoXuan/daxp-Quan_jun_wang-Ba_wang_bie_ji-nanluo', 'student_01'],
+                           ['20171214SongRuoXuan/daxp-Quan_jun_wang-Ba_wang_bie_ji-nanluo', 'student_02']]
+    return test_primary_school
+
+
 def get_train_test_recordings_joint_subset():
     """train_nacta_2017, train_nacta for syllable and phoneme joint estimation and HSMM alignment acoustic model,
     a subset, for ISMIR 2018."""

@@ -2,7 +2,8 @@ from os.path import join, dirname
 
 root_path = join(dirname(__file__), '..')
 
-path_jingju_dataset = '/media/gong/ec990efa-9ee0-4693-984b-29372dcea0d1/Data/RongGong'
+# path_jingju_dataset = '/media/gong/ec990efa-9ee0-4693-984b-29372dcea0d1/Data/RongGong'
+path_jingju_dataset = '/Users/ronggong/Documents_using/MTG document/Jingju arias'
 
 # primary school dataset path
 primarySchool_dataset_root_path = join(path_jingju_dataset, 'primary_school_recording')
